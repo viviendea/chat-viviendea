@@ -1,13 +1,12 @@
-import Hi from "./components/Hi"
-
+import Hi from "./components/Hi";
 
 function App() {
-
-  return (
-    <>
-     <Hi />
-    </>
-  )
+    return (
+        <>
+            <Hi />
+            
+        </>
+    );
 }
 
-export default App
+export default App;
