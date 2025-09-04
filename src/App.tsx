@@ -1,10 +1,11 @@
-import Hi from "./components/Hi";
+import Chat from "@components/Chat/Chat";
+import Message from "@components/Message/Message";
 
 function App() {
     return (
         <>
-            <Hi />
-            
+            <Chat />
+            <Message />
         </>
     );
 }

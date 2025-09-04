@@ -10,14 +10,16 @@
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
-      "@interfaces/*": ["src/types/*"],
+      "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
       "@lib/*": ["src/lib/*"],
       "@assets/*": ["public/assets/*"],
       "@public/*": ["public/*"],
       "@sections/*": ["src/sections/*"],
       "@icons/*": ["src/icons/*"],
-      "@content/*": ["src/content/*"]
-    },
+      "@content/*": ["src/content/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@services/*": ["src/services/*"]
+    }
   }
 }
