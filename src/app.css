@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-principal: #E20600;
-  --color-secundary: #009145; 
+    --color-principal: #4211c6;
+    --color-secundary: #ed6876;
+    --color-success: #5bb154;
+    --color-error: #dc0404;
+    --color-warning: #f6c30d;
 }
 
 :root {
-  color-scheme: light dark;
+    /* color-scheme: light dark; */
 }

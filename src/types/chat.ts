@@ -1,11 +1,19 @@
-export interface Message {
-    id: string;
-    text: string;
-    sender: "user" | "bot";
+export const Author = {
+    USER: "user",
+    ELE: "ele",
+    ESE: "ese",
+    ALE: "ale",
+} as const;
+
+export type Author = (typeof Author)[keyof typeof Author];
+export interface MessageType {
+    content: string;
+    role: Author;
     timestamp: Date;
+    img?: string | null | undefined;
 }
 
 export interface ChatState {
-    messages: Message[];
+    messages: MessageType[];
     isLoading: boolean;
 }
