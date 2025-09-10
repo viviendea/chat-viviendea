@@ -17,21 +17,21 @@ const Chat = ({
     return (
         <section className="chat-wrapper flex flex-col items-center justify-center min-h-screen">
             <section
-                className="relative bg-white md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl border border-gray-300 rounded-lg shadow-lg h-5/12"
+                className="relative bg-white lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl border border-gray-300 rounded-lg shadow-lg flex flex-col justify-between h-full lg:max-h-[80vh]"
                 role="chat-container"
+                data-testid="chat-container"
             >
-
                 <article className="chat-header w-full flex items-center gap-4 px-4 py-1 border-b border-gray-300 top-0 left-0 right-0 bg-white z-10 sticky">
                     <img className="w-[50px]" src="/chat-icon.png" alt="" />
                     <h2 className=" text-principal font-bold text-lg md:text-xl">
                         Chat de Viviendea
                     </h2>
                 </article>
-                
+
                 <div
                     aria-live="polite"
                     role="log"
-                    className="messages-list p-6 gap-4 flex flex-col max-h-full mt-6 overflow-scroll"
+                    className="messages-list p-6 gap-4 flex flex-col mt-6 overflow-scroll"
                 >
                     {messages.map((message, index) => (
                         <Message
@@ -46,7 +46,7 @@ const Chat = ({
 
                 <div className="h-[150px] w-full p-4 sticky bottom-0 left-0 right-0 bg-white border-t border-gray-300ƒ">
                     <textarea
-                        className=" text-start border-principal w-full h-full p-2 border rounded-lg"
+                        className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm"
                         placeholder="Escribe un mensaje..."
                         id="w3review"
                         name="w3review"
