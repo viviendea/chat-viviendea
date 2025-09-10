@@ -1,4 +1,5 @@
 import { Author, type MessageType } from "../../types/chat";
+import { InputArea } from "../InputArea/InputArea";
 import Message from "../Message/Message";
 
 const Chat = ({
@@ -44,22 +45,7 @@ const Chat = ({
                     ))}
                 </div>
 
-                <div className="h-[150px] w-full p-4 sticky bottom-0 left-0 right-0 bg-white border-t border-gray-300ƒ">
-                    <textarea
-                        className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm"
-                        placeholder="Escribe un mensaje..."
-                        id="w3review"
-                        name="w3review"
-                        rows="4"
-                        cols="50"
-                    >
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Atque non excepturi sit perspiciatis praesentium
-                        eius nihil. Ratione, ipsam quae. Natus rem delectus
-                        dolores, consequatur quod rerum iusto odit excepturi
-                        repellendus!
-                    </textarea>
-                </div>
+                <InputArea />
             </section>
         </section>
     );
