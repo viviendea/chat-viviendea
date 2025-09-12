@@ -1,6 +1,6 @@
 export const InputArea = () => {
     return (
-        <div className="h-[150px] w-full p-4 sticky bottom-0 left-0 right-0 bg-white border-t border-gray-300 flex ">
+        <div className="h-[150px] w-full p-4 sticky bottom-0 left-0 right-0 bg-white border-t border-gray-300 flex" data-testid="input-area">
             <textarea
                 className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm"
                 placeholder="Escribe un mensaje..."
@@ -15,7 +15,7 @@ export const InputArea = () => {
                 iusto odit excepturi repellendus!
             </textarea>
 
-            <button className="bg-gray-300 text-gray-600 rounded-4xl hover:bg-blue-600 transition-colors w-[40px] h-[40px] flex items-center justify-center ml-2 self-end">
+            <button className="bg-gray-300 text-gray-600 rounded-4xl transition-colors w-[40px] h-[40px] flex items-center justify-center ml-2 self-end" data-testid="send-button">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
