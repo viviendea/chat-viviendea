@@ -1,25 +1,54 @@
-export const InputArea = () => {
+import { useState } from 'react';
+
+interface InputAreaProps {
+    onSendMessage?: (message: string) => void;
+}
+
+export const InputArea = ({ onSendMessage }: InputAreaProps) => {
+    const [message, setMessage] = useState('');
+
+    const handleSend = () => {
+        if (message.trim() && onSendMessage) {
+            onSendMessage(message.trim());
+            setMessage('');
+        }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    };
+
     return (
-        <div className="h-[150px] w-full p-4 sticky bottom-0 left-0 right-0 bg-white border-t border-gray-300 flex" data-testid="input-area">
+        <div
+            className="h-[150px] w-full p-4 sticky bottom-0 left-0 right-0 bg-white border-t border-gray-300 flex"
+            data-testid="input-area"
+        >
             <textarea
                 className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm"
                 placeholder="Escribe un mensaje..."
-                id="w3review"
-                name="w3review"
-                rows="4"
-                cols="50"
-            >
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-                non excepturi sit perspiciatis praesentium eius nihil. Ratione,
-                ipsam quae. Natus rem delectus dolores, consequatur quod rerum
-                iusto odit excepturi repellendus!
-            </textarea>
+                id="message-input"
+                name="message-input"
+                rows={4}
+                cols={50}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                data-testid="message-textarea"
+            />
 
-            <button className="bg-gray-300 text-gray-600 rounded-4xl transition-colors w-[40px] h-[40px] flex items-center justify-center ml-2 self-end" data-testid="send-button">
+            <button
+                className="bg-gray-300 text-gray-600 hover:bg-principal hover:text-white active:bg-principal active:text-white rounded-full transition-colors w-[40px] h-[40px] flex items-center justify-center ml-2 self-end cursor-pointer"
+                data-testid="send-button"
+                onClick={handleSend}
+                disabled={!message.trim()}
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
-                    className="bi bi-send w-[20px] h-[20px] flex items-center justify-center"
+                    className="w-[20px] h-[20px]"
                     viewBox="0 0 20 20"
                 >
                     <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />

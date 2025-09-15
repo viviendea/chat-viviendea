@@ -4,7 +4,7 @@ import { mockConversation } from "./utils/mockData";
 function App() {
     return (
         <>
-            <Chat messages={mockConversation} />
+            <Chat initialMessages={mockConversation} />
         </>
     );
 }

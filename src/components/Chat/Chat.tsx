@@ -1,9 +1,10 @@
+import { useState, useRef, useEffect } from "react";
 import { Author, type MessageType } from "../../types/chat";
 import { InputArea } from "../InputArea/InputArea";
 import Message from "../Message/Message";
 
 const Chat = ({
-    messages = [
+    initialMessages = [
         { content: "Hola", role: Author.ELE, timestamp: new Date(), img: null },
         {
             content: "¡Hola! ¿En qué puedo ayudarte?",
@@ -13,12 +14,33 @@ const Chat = ({
         },
     ],
 }: {
-    messages?: MessageType[];
+    initialMessages?: MessageType[];
 }) => {
+    const [messages, setMessages] = useState<MessageType[]>(initialMessages);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const handleMessage = (message: string) => {
+        const newMessage: MessageType = {
+            content: message,
+            role: Author.USER,
+            timestamp: new Date(),
+            img: null,
+        };
+        
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+    };
     return (
         <section className="chat-wrapper flex flex-col items-center justify-center min-h-screen">
             <section
-                className="relative bg-white lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl border border-gray-300 rounded-lg shadow-lg flex flex-col justify-between h-full lg:max-h-[80vh]"
+                className="relative bg-white lg:w-3xl xl:w-4xl 2xl:w-5xl border border-gray-300 rounded-lg shadow-lg flex flex-col justify-between h-[100vh] lg:h-[90vh]"
                 role="chat-container"
                 data-testid="chat-container"
             >
@@ -43,9 +65,10 @@ const Chat = ({
                             img={message.img}
                         />
                     ))}
+                    <div ref={messagesEndRef} />
                 </div>
 
-                <InputArea />
+                <InputArea onSendMessage={handleMessage}/>
             </section>
         </section>
     );
