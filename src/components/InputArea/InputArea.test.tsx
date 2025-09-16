@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { InputArea } from "./InputArea";
 
@@ -136,5 +137,59 @@ describe("Input area Component", () => {
         await user.type(textarea, "Mensaje");
         
         expect(sendBtn).not.toBeDisabled();
+    });
+
+    it("deshabilita textarea y botón cuando disabled=true", () => {
+        render(<InputArea disabled={true} />);
+
+        const textarea = screen.getByTestId("message-textarea");
+        const sendBtn = screen.getByTestId("send-button");
+
+        expect(textarea).toBeDisabled();
+        expect(sendBtn).toBeDisabled();
+    });
+
+    it("habilita textarea y botón cuando disabled=false", () => {
+        render(<InputArea disabled={false} />);
+
+        const textarea = screen.getByTestId("message-textarea");
+        const sendBtn = screen.getByTestId("send-button");
+
+        expect(textarea).not.toBeDisabled();
+        // El botón estará deshabilitado porque no hay texto, pero no por la prop disabled
+        expect(sendBtn).toBeDisabled(); // Porque no hay mensaje
+    });
+
+    it("no envía mensaje cuando está disabled", async () => {
+        const mockOnSendMessage = vi.fn();
+        const user = userEvent.setup();
+        
+        render(<InputArea onSendMessage={mockOnSendMessage} disabled={true} />);
+
+        const textarea = screen.getByTestId("message-textarea");
+        const sendBtn = screen.getByTestId("send-button");
+
+        // Intentar escribir (no debería funcionar porque está disabled)
+        await user.type(textarea, "Mensaje de prueba");
+        expect(textarea).toHaveValue(""); // No debería haber valor
+
+        // Intentar hacer click en enviar (no debería funcionar)
+        await user.click(sendBtn);
+        expect(mockOnSendMessage).not.toHaveBeenCalled();
+    });
+
+    it("no permite envío con Enter cuando está disabled", async () => {
+        const mockOnSendMessage = vi.fn();
+        const user = userEvent.setup();
+        
+        render(<InputArea onSendMessage={mockOnSendMessage} disabled={true} />);
+
+        const textarea = screen.getByTestId("message-textarea");
+
+        // Intentar escribir y presionar Enter
+        await user.type(textarea, "Mensaje");
+        await user.keyboard("{Enter}");
+
+        expect(mockOnSendMessage).not.toHaveBeenCalled();
     });
 });

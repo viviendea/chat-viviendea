@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Author, type MessageType } from "../../types/chat";
 import { InputArea } from "../InputArea/InputArea";
 import Message from "../Message/Message";
+import { chatApiService } from "../../services/chatApi";
 
 const Chat = ({
     initialMessages = [
@@ -17,6 +18,7 @@ const Chat = ({
     initialMessages?: MessageType[];
 }) => {
     const [messages, setMessages] = useState<MessageType[]>(initialMessages);
+    const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -27,15 +29,54 @@ const Chat = ({
         scrollToBottom();
     }, [messages]);
 
-    const handleMessage = (message: string) => {
-        const newMessage: MessageType = {
+    const handleMessage = async (message: string) => {
+        // No permitir nuevos mensajes mientras se está cargando
+        if (isLoading) return;
+
+        // Crear el mensaje del usuario
+        const userMessage: MessageType = {
             content: message,
             role: Author.USER,
             timestamp: new Date(),
             img: null,
         };
         
-        setMessages(prevMessages => [...prevMessages, newMessage]);
+        // Agregar el mensaje del usuario inmediatamente
+        setMessages(prevMessages => [...prevMessages, userMessage]);
+        
+        // Establecer estado de carga y agregar mensaje de loader
+        setIsLoading(true);
+        const loadingMessage = chatApiService.createLoadingMessage();
+        
+        setMessages(prevMessages => [...prevMessages, loadingMessage]);
+
+        try {
+            // Enviar mensaje a la API
+            const apiResponse = await chatApiService.sendMessage({
+                message: message,
+                userId: 'user-123', // En producción esto vendría del contexto de usuario
+                conversationId: 'conversation-123' // En producción esto se manejaría dinámicamente
+            });
+
+            // Remover mensaje de loading y agregar respuesta del bot
+            setMessages(prevMessages => {
+                const messagesWithoutLoading = prevMessages.slice(0, -1);
+                const botResponse = chatApiService.createBotMessage(apiResponse.response);
+                return [...messagesWithoutLoading, botResponse];
+            });
+
+        } catch (error) {
+            // En caso de error, remover loading y mostrar mensaje de error
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            
+            setMessages(prevMessages => {
+                const messagesWithoutLoading = prevMessages.slice(0, -1);
+                const errorResponse = chatApiService.createErrorMessage(errorMessage);
+                return [...messagesWithoutLoading, errorResponse];
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
     return (
         <section className="chat-wrapper flex flex-col items-center justify-center min-h-screen">
@@ -68,7 +109,7 @@ const Chat = ({
                     <div ref={messagesEndRef} />
                 </div>
 
-                <InputArea onSendMessage={handleMessage}/>
+                <InputArea onSendMessage={handleMessage} disabled={isLoading}/>
             </section>
         </section>
     );

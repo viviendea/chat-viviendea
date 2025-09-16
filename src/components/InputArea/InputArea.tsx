@@ -2,20 +2,21 @@ import { useState } from 'react';
 
 interface InputAreaProps {
     onSendMessage?: (message: string) => void;
+    disabled?: boolean;
 }
 
-export const InputArea = ({ onSendMessage }: InputAreaProps) => {
+export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) => {
     const [message, setMessage] = useState('');
 
     const handleSend = () => {
-        if (message.trim() && onSendMessage) {
+        if (message.trim() && onSendMessage && !disabled) {
             onSendMessage(message.trim());
             setMessage('');
         }
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter' && !e.shiftKey && !disabled) {
             e.preventDefault();
             handleSend();
         }
@@ -37,13 +38,14 @@ export const InputArea = ({ onSendMessage }: InputAreaProps) => {
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
                 data-testid="message-textarea"
+                disabled={disabled}
             />
 
             <button
-                className="bg-gray-300 text-gray-600 hover:bg-principal hover:text-white active:bg-principal active:text-white rounded-full transition-colors w-[40px] h-[40px] flex items-center justify-center ml-2 self-end cursor-pointer"
+                className="bg-gray-300 text-gray-600 hover:bg-principal hover:text-white active:bg-principal active:text-white rounded-full transition-colors w-[40px] h-[40px] flex items-center justify-center ml-2 self-end cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 data-testid="send-button"
                 onClick={handleSend}
-                disabled={!message.trim()}
+                disabled={!message.trim() || disabled}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
