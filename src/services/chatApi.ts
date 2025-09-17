@@ -28,7 +28,7 @@ export const chatApiService = {
    */
   async sendMessage(request: ApiMessageRequest): Promise<ApiMessageResponse> {
     try {
-      const response = await apiClient.post<ApiMessageResponse>('/chat/message', request);
+      const response = await apiClient.post<ApiMessageResponse>('/posts', request);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

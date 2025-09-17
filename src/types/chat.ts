@@ -11,6 +11,7 @@ export interface MessageType {
     role: Author;
     timestamp: Date;
     img?: string | null | undefined;
+    isLastMessage?: boolean;
 }
 
 export interface ChatState {

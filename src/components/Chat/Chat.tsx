@@ -97,15 +97,26 @@ const Chat = ({
                     role="log"
                     className="messages-list p-6 gap-4 flex flex-col mt-6 overflow-scroll"
                 >
-                    {messages.map((message, index) => (
-                        <Message
-                            key={`${message.role}-${index}`}
-                            content={message.content}
-                            timestamp={message.timestamp}
-                            role={message.role}
-                            img={message.img}
-                        />
-                    ))}
+                    {messages.map((message, index) => {
+                        // Encontrar el índice del último mensaje que no es del usuario
+                        const lastNonUserMessageIndex = messages
+                            .map((msg, i) => ({ msg, index: i }))
+                            .filter(({ msg }) => msg.role !== Author.USER)
+                            .pop()?.index;
+                        
+                        const isLastMessage = index === lastNonUserMessageIndex && message.role !== Author.USER;
+                        
+                        return (
+                            <Message
+                                key={`${message.role}-${index}`}
+                                content={message.content}
+                                timestamp={message.timestamp}
+                                role={message.role}
+                                img={message.img}
+                                isLastMessage={isLastMessage}
+                            />
+                        );
+                    })}
                     <div ref={messagesEndRef} />
                 </div>
 
