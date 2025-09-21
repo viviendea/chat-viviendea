@@ -28,7 +28,7 @@ export const chatApiService = {
    */
   async sendMessage(request: ApiMessageRequest): Promise<ApiMessageResponse> {
     try {
-      const response = await apiClient.post<ApiMessageResponse>('/posts', request);
+      const response = await apiClient.post<ApiMessageResponse>('', request);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -43,7 +43,7 @@ export const chatApiService = {
    * Crea un mensaje de loading para mostrar mientras se procesa la respuesta
    */
   createLoadingMessage(): MessageType {
-    return {
+    return { 
       content: 'Escribiendo...',
       role: Author.ELE,
       timestamp: new Date(),
