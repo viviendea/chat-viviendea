@@ -7,9 +7,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "test:ci": "vitest run",
+    "test:watch": "vitest --watch",
+    "coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit",
+    "build:analyze": "npm run build && echo 'Build completed for analysis'"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",

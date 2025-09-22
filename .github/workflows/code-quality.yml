@@ -1,0 +1,54 @@
+name: Code Quality
+
+on:
+  schedule:
+    # Ejecutar todos los lunes a las 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Permite ejecutar manualmente
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  code-quality-check:
+    runs-on: ubuntu-latest
+    name: Weekly Code Quality Check
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run comprehensive tests
+      run: npm run coverage
+      
+    - name: Lint check
+      run: npm run lint
+      
+    - name: Type checking
+      run: npm run type-check
+      
+    - name: Security audit
+      run: npm audit --audit-level=moderate
+      continue-on-error: true
+      
+    - name: Check for outdated dependencies
+      run: npm outdated
+      continue-on-error: true
+      
+    - name: Bundle size analysis
+      run: |
+        npm run build
+        echo "Current build size:"
+        du -sh dist/
+        
+        # Podrías agregar aquí herramientas como bundle-analyzer
+        # o comparar con builds anteriores

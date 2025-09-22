@@ -1,0 +1,105 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Permite ejecutar manualmente el workflow
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Re-ejecutar tests antes del deploy
+  test-before-deploy:
+    runs-on: ubuntu-latest
+    name: Pre-Deploy Tests
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run all tests
+      run: npm run coverage
+      
+    - name: Type checking
+      run: npm run type-check
+
+  # Build para producción
+  build-production:
+    runs-on: ubuntu-latest
+    name: Production Build
+    needs: test-before-deploy
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for production
+      run: npm run build
+      env:
+        # Aquí puedes agregar variables de entorno para producción
+        NODE_ENV: production
+        # VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+        # VITE_APP_VERSION: ${{ github.sha }}
+        
+    - name: Upload production artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: production-dist
+        path: dist/
+        retention-days: 90
+        
+    - name: Display build info
+      run: |
+        echo "Build completed for commit: ${{ github.sha }}"
+        echo "Build size:"
+        du -sh dist/
+        echo "Files in dist:"
+        ls -la dist/
+
+  # Job para preparar el deploy (aquí puedes agregar tu plataforma específica)
+  prepare-deploy:
+    runs-on: ubuntu-latest
+    name: Prepare Deployment
+    needs: build-production
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: production-dist
+        path: dist/
+        
+    - name: Deployment preparation
+      run: |
+        echo "Preparing deployment for production..."
+        echo "Artifact contents:"
+        ls -la dist/
+        
+        # Aquí puedes agregar comandos específicos para tu plataforma de deploy
+        # Por ejemplo:
+        # - Subir a S3/CloudFront
+        # - Deploy a Vercel
+        # - Deploy a Netlify
+        # - Deploy a GitHub Pages
+        
+        echo "Deployment preparation completed"
