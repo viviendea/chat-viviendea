@@ -3,6 +3,7 @@ import { Author, type MessageType } from "../../types/chat";
 import { InputArea } from "../InputArea/InputArea";
 import Message from "../Message/Message";
 import { chatApiService } from "../../services/chatApi";
+import { getChatIconPath } from "../../utils/assets";
 
 const Chat = ({
     initialMessages = [
@@ -89,7 +90,7 @@ const Chat = ({
                 data-testid="chat-container"
             >
                 <article className="chat-header w-full flex items-center gap-4 px-4 py-1 border-b border-gray-300 top-0 left-0 right-0 bg-white z-10 sticky">
-                    <img className="w-[50px]" src="/chat-icon.png" alt="" />
+                    <img className="w-[50px]" src={getChatIconPath()} alt="" />
                     <h2 className=" text-principal font-bold text-lg md:text-xl">
                         Chat de Viviendea
                     </h2>

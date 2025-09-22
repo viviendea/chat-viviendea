@@ -1,0 +1,90 @@
+name: Build and Release Widget
+
+on:
+    push:
+        tags:
+            - "v*" # Se ejecuta cuando se crea un tag que empiece con 'v'
+
+jobs:
+    build-and-release:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build widget
+              run: npm run build:widget
+
+            - name: Create release archives
+              run: |
+                  cd widget-dist
+                  zip -r ../chat-viviendea-widget.zip .
+                  tar -czf ../chat-viviendea-widget.tar.gz .
+
+            - name: Create GitHub Release
+              uses: actions/create-release@v1
+              id: create_release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref_name }}
+                  release_name: Chat Viviendea Widget ${{ github.ref_name }}
+                  body: |
+                      ## Chat Viviendea Widget Release ${{ github.ref_name }}
+
+                      ### 📦 Archivos principales para jsDelivr:
+                      - `chat-widget.umd.js` - Versión UMD para uso directo en navegadores
+                      - `chat-widget.es.js` - Versión ES modules
+                      - `chat-viviendea.css` - Estilos CSS necesarios
+
+                      ### 🚀 Uso con jsDelivr:
+                      ```html
+                      <!-- Incluir CSS -->
+                      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@${{ github.ref_name }}/widget-dist/chat-viviendea.css">
+
+                      <!-- Incluir JavaScript -->
+                      <script src="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@${{ github.ref_name }}/widget-dist/chat-widget.umd.js"></script>
+
+                      <!-- Inicializar el widget -->
+                      <script>
+                        window.initChatWidget({
+                          containerId: 'mi-chat-widget',
+                          position: 'bottom-right'
+                        });
+                      </script>
+                      ```
+
+                      ### 📋 Changelog:
+                      - Consulta el README.md para más detalles sobre esta versión
+                  draft: false
+                  prerelease: false
+
+            - name: Upload Widget ZIP
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./chat-viviendea-widget.zip
+                  asset_name: chat-viviendea-widget.zip
+                  asset_content_type: application/zip
+
+            - name: Upload Widget TAR.GZ
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./chat-viviendea-widget.tar.gz
+                  asset_name: chat-viviendea-widget.tar.gz
+                  asset_content_type: application/gzip

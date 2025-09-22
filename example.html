@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo - Chat Viviendea Widget</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .demo-section h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .button:hover {
+            background: #5a6fd8;
+        }
+        
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+    </style>
+    
+    <!-- Incluir CSS del widget desde archivos locales -->
+    <link rel="stylesheet" href="./widget-dist/chat-viviendea.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Demo del Chat Viviendea Widget</h1>
+        
+        <div class="status success">
+            ✅ Widget cargado correctamente desde archivos locales (widget-dist/)
+        </div>
+        
+        <div class="demo-section">
+            <h3>📝 Descripción</h3>
+            <p>Este es un ejemplo de integración del widget de chat de Viviendea utilizando jsDelivr CDN. El widget está diseñado para ser fácil de integrar en cualquier sitio web.</p>
+        </div>
+        
+        <div class="demo-section">
+            <h3>🎮 Controles de demostración</h3>
+            <button class="button" onclick="toggleWidget()">🔄 Mostrar/Ocultar Chat</button>
+            <button class="button" onclick="moveWidget()">📍 Cambiar Posición</button>
+            <button class="button" onclick="destroyWidget()">❌ Eliminar Widget</button>
+            <button class="button" onclick="createWidget()">➕ Crear Widget</button>
+        </div>
+        
+        <div class="demo-section">
+            <h3>💻 Código de integración</h3>
+            <p>Para integrar este widget en tu sitio web, simplemente agrega:</p>
+            <div class="code">
+&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-viviendea.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-widget.umd.js"&gt;&lt;/script&gt;
+
+&lt;!-- Inicialización --&gt;
+&lt;script&gt;
+  window.initChatWidget({
+    position: 'bottom-right',
+    width: '400px',
+    height: '600px'
+  });
+&lt;/script&gt;
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>🔗 Enlaces útiles</h3>
+            <ul>
+                <li><a href="https://github.com/viviendea/chat-viviendea" target="_blank">📦 Repositorio en GitHub</a></li>
+                <li><a href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/" target="_blank">🌐 Archivos en jsDelivr</a></li>
+                <li><a href="./WIDGET_USAGE.md" target="_blank">📖 Documentación completa</a></li>
+            </ul>
+        </div>
+        
+        <div class="status info" id="status">
+            ℹ️ El widget se inicializará automáticamente en la esquina inferior derecha
+        </div>
+    </div>
+    
+    <!-- Incluir JavaScript del widget desde archivos locales -->
+    <script src="./widget-dist/chat-widget.umd.js"></script>
+    
+    <script>
+        let chatWidget = null;
+        let currentPosition = 'bottom-right';
+        
+        // Función para actualizar el estado
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        // Inicializar el widget automáticamente
+        function initializeWidget() {
+            try {
+                chatWidget = window.initChatWidget({
+                    containerId: 'demo-chat-widget',
+                    position: currentPosition,
+                    width: '400px',
+                    height: '600px',
+                    theme: 'light'
+                });
+                updateStatus('✅ Widget inicializado correctamente', 'success');
+            } catch (error) {
+                updateStatus('❌ Error al inicializar el widget: ' + error.message, 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        // Funciones de control
+        function toggleWidget() {
+            if (chatWidget) {
+                chatWidget.toggle();
+                updateStatus('🔄 Visibilidad del widget alternada', 'info');
+            } else {
+                updateStatus('⚠️ Widget no inicializado', 'error');
+            }
+        }
+        
+        function moveWidget() {
+            if (chatWidget) {
+                currentPosition = currentPosition === 'bottom-right' ? 'bottom-left' : 'bottom-right';
+                chatWidget.updateConfig({ position: currentPosition });
+                updateStatus(`📍 Widget movido a: ${currentPosition}`, 'info');
+            } else {
+                updateStatus('⚠️ Widget no inicializado', 'error');
+            }
+        }
+        
+        function destroyWidget() {
+            if (chatWidget) {
+                chatWidget.destroy();
+                chatWidget = null;
+                updateStatus('❌ Widget eliminado', 'info');
+            } else {
+                updateStatus('⚠️ No hay widget para eliminar', 'error');
+            }
+        }
+        
+        function createWidget() {
+            if (!chatWidget) {
+                initializeWidget();
+            } else {
+                updateStatus('⚠️ El widget ya existe', 'error');
+            }
+        }
+        
+        // Inicializar cuando la página cargue
+        window.addEventListener('load', function() {
+            setTimeout(initializeWidget, 1000); // Esperar 1 segundo para asegurar que todo esté cargado
+        });
+        
+        // Mostrar información de versión si está disponible
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (window.ChatViviendea) {
+                    console.log('✅ Chat Viviendea Widget cargado correctamente');
+                    console.log('🔗 GitHub: https://github.com/viviendea/chat-viviendea');
+                    console.log('📦 jsDelivr: https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/');
+                } else {
+                    console.error('❌ Error: Widget no cargado');
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

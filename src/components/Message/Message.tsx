@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Author, type MessageType } from "../../types/chat";
 import { useTypewriter } from "../../hooks/useTypewriter";
+import { getAvatarPath } from "../../utils/assets";
 
 const DEFAULT_CONTENT =
     "¡Hola! Soy Ele y voy a guiarte en el diseño de tu vivienda ideal. Pero primero empezemos por lo más importante, ¿Dónde te gustaría vivir?";
@@ -60,7 +61,7 @@ const Message = ({
                 {!isUserMessage && (
                     <div className={messageClasses.avatar}>
                         <img
-                            src={`/${role}-avatar.png`}
+                            src={getAvatarPath(role)}
                             alt={`Avatar de ${role}`}
                             loading="lazy"
                         />
