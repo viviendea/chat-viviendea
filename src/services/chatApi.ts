@@ -18,6 +18,7 @@ export interface ApiMessageRequest {
 
 export interface ApiMessageResponse {
   response: string;
+  timestamp?: string | Date;
   conversationId?: string;
   metadata?: Record<string, unknown>;
 }
@@ -54,11 +55,11 @@ export const chatApiService = {
   /**
    * Crea un mensaje de respuesta del bot
    */
-  createBotMessage(content: string): MessageType {
+  createBotMessage(content: string, timestamp?: string | Date): MessageType {
     return {
       content,
       role: Author.ELE,
-      timestamp: new Date(),
+      timestamp: timestamp ? new Date(timestamp) : new Date(),
       img: null,
     };
   },

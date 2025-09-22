@@ -61,7 +61,10 @@ const Chat = ({
             // Remover mensaje de loading y agregar respuesta del bot
             setMessages(prevMessages => {
                 const messagesWithoutLoading = prevMessages.slice(0, -1);
-                const botResponse = chatApiService.createBotMessage(apiResponse.response);
+                const botResponse = chatApiService.createBotMessage(
+                    apiResponse.response, 
+                    apiResponse.timestamp
+                );
                 return [...messagesWithoutLoading, botResponse];
             });
 
