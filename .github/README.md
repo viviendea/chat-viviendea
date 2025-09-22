@@ -56,7 +56,7 @@ Los workflows utilizan estos scripts definidos en `package.json`:
 ## Variables de Entorno y Secretos
 
 ### Variables de Entorno Disponibles
-- `NODE_VERSION`: '18' (definida en workflows)
+- `NODE_VERSION`: '20' (Node.js 20 LTS definida en workflows)
 - `NODE_ENV`: 'production' (en deploy)
 
 ### Secretos Recomendados (configurar en GitHub)
@@ -109,7 +109,7 @@ Se recomienda configurar las siguientes reglas de protección para la rama `main
 #### Para Netlify:
 ```yaml
 - name: Deploy to Netlify
-  uses: nwtgck/actions-netlify@v2.0
+  uses: nwtgck/actions-netlify@v3.0
   with:
     publish-dir: './dist'
     production-branch: main
@@ -123,7 +123,7 @@ Se recomienda configurar las siguientes reglas de protección para la rama `main
 #### Para GitHub Pages:
 ```yaml
 - name: Deploy to GitHub Pages
-  uses: peaceiris/actions-gh-pages@v3
+  uses: peaceiris/actions-gh-pages@v4
   with:
     github_token: ${{ secrets.GITHUB_TOKEN }}
     publish_dir: ./dist

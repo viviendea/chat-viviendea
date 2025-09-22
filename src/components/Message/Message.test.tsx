@@ -6,14 +6,20 @@ import { Author } from "../../types/chat";
 describe("Message Component", () => {
     /* CHECK FOR MESSAGE RENDERING */
     it("Renders Message component", () => {
-        render(<Message />);
+        render(<Message content="Hello, world!" role={Author.USER} timestamp={new Date()} />);
         const message = screen.getByTestId("chat-message");
         expect(message).toBeInTheDocument();
     });
 
     /* CHECK FOR MESSAGE TEXT */
     it("Displays the correct message text", () => {
-        render(<Message content="Hello, world!" role={Author.USER} />);
+        render(
+            <Message
+                content="Hello, world!"
+                role={Author.USER}
+                timestamp={new Date()}
+            />
+        );
 
         const message = screen.getByTestId("chat-message");
         expect(message).toHaveTextContent("Hello, world!");

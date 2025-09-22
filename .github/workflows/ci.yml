@@ -9,7 +9,7 @@ on:
 
 # Variables de entorno globales
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20' # Actualizado a Node 20 LTS
 
 jobs:
   # Job para testing y linting
@@ -37,7 +37,7 @@ jobs:
       run: npm run coverage
       
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       if: success()
       with:
         file: ./coverage/coverage-final.json
@@ -71,7 +71,7 @@ jobs:
       run: npm run build
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: github.ref == 'refs/heads/main'
       with:
         name: production-build
