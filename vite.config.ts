@@ -41,7 +41,7 @@ export default defineConfig({
         copyPublicDir: true
     },
     publicDir: 'public',
-    define: {
+    define: process.env.VITEST ? {} : {
         'process.env': {},
         'process.env.NODE_ENV': '"production"',
         global: 'globalThis',
