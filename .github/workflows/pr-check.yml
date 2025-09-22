@@ -41,9 +41,9 @@ jobs:
       run: |
         npm run build
         echo "Build completed successfully"
-        if [ -d "dist" ]; then
+        if [ -d "widget-dist" ]; then
           echo "Build size:"
-          du -sh dist/
+          du -sh widget-dist/
         fi
 
   pr-comments:

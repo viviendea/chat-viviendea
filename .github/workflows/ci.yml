@@ -75,7 +75,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       with:
         name: production-build
-        path: dist/
+        path: widget-dist/
         retention-days: 30
 
   # Job para verificar que no hay vulnerabilidades de seguridad

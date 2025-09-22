@@ -64,16 +64,16 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: production-dist
-        path: dist/
+        path: widget-dist/
         retention-days: 90
         
     - name: Display build info
       run: |
         echo "Build completed for commit: ${{ github.sha }}"
         echo "Build size:"
-        du -sh dist/
-        echo "Files in dist:"
-        ls -la dist/
+        du -sh widget-dist/
+        echo "Files in widget-dist:"
+        ls -la widget-dist/
 
   # Job para preparar el deploy (aquí puedes agregar tu plataforma específica)
   prepare-deploy:
@@ -87,13 +87,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: production-dist
-        path: dist/
+        path: widget-dist/
         
     - name: Deployment preparation
       run: |
         echo "Preparing deployment for production..."
         echo "Artifact contents:"
-        ls -la dist/
+        ls -la widget-dist/
         
         # Aquí puedes agregar comandos específicos para tu plataforma de deploy
         # Por ejemplo:

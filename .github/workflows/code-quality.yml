@@ -48,7 +48,7 @@ jobs:
       run: |
         npm run build
         echo "Current build size:"
-        du -sh dist/
+        du -sh widget-dist/
         
         # Podrías agregar aquí herramientas como bundle-analyzer
         # o comparar con builds anteriores
