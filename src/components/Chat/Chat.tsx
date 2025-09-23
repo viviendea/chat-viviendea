@@ -20,6 +20,7 @@ const Chat = ({
 }) => {
     const [messages, setMessages] = useState<MessageType[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -29,6 +30,10 @@ const Chat = ({
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
+    const toggleChat = () => {
+        setIsChatOpen(!isChatOpen);
+    };
 
     const handleMessage = async (message: string) => {
         // No permitir nuevos mensajes mientras se está cargando
@@ -83,49 +88,72 @@ const Chat = ({
         }
     };
     return (
-        <section className="chat-wrapper flex flex-col items-center justify-center min-h-screen">
-            <section
-                className="relative bg-white lg:w-3xl xl:w-4xl 2xl:w-5xl border border-gray-300 rounded-lg shadow-lg flex flex-col justify-between h-[100vh] lg:h-[90vh]"
-                role="chat-container"
-                data-testid="chat-container"
-            >
-                <article className="chat-header w-full flex items-center gap-4 px-4 py-1 border-b border-gray-300 top-0 left-0 right-0 bg-white z-10 sticky">
-                    <img className="w-[50px]" src={getChatIconPath()} alt="" />
-                    <h2 className=" text-principal font-bold text-lg md:text-xl">
-                        Chat de Viviendea
-                    </h2>
-                </article>
-
-                <div
-                    aria-live="polite"
-                    role="log"
-                    className="messages-list p-6 gap-4 flex flex-col mt-6 overflow-scroll"
+        <section className="chat-wrapper w-full h-full">
+            {!isChatOpen ? (
+                // Icono circular flotante
+                <button
+                    onClick={toggleChat}
+                    className="chat-toggle-btn absolute bottom-6 right-6 w-16 h-16 bg-white hover:scale-110 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 cursor-pointer"
+                    aria-label="Abrir chat de Viviendea"
                 >
-                    {messages.map((message, index) => {
-                        // Encontrar el índice del último mensaje que no es del usuario
-                        const lastNonUserMessageIndex = messages
-                            .map((msg, i) => ({ msg, index: i }))
-                            .filter(({ msg }) => msg.role !== Author.USER)
-                            .pop()?.index;
-                        
-                        const isLastMessage = index === lastNonUserMessageIndex && message.role !== Author.USER;
-                        
-                        return (
-                            <Message
-                                key={`${message.role}-${index}`}
-                                content={message.content}
-                                timestamp={message.timestamp}
-                                role={message.role}
-                                img={message.img}
-                                isLastMessage={isLastMessage}
-                            />
-                        );
-                    })}
-                    <div ref={messagesEndRef} />
-                </div>
+                    <img 
+                        className="w-8 h-8" 
+                        src={getChatIconPath()} 
+                        alt="Chat de Viviendea" 
+                    />
+                </button>
+            ) : (
+                // Chat completo
+                <section
+                    className="chat-widget-floating w-full h-full bg-white border border-gray-300 rounded-lg shadow-lg flex flex-col"
+                    role="chat-container"
+                    data-testid="chat-container"
+                >
+                    <article className="chat-header w-full flex items-center gap-4 px-4 py-3 border-b border-gray-300 bg-white rounded-t-lg">
+                        <img className="w-8 h-8" src={getChatIconPath()} alt="" />
+                        <h2 className="text-principal font-bold text-lg flex-1">
+                            Chat de Viviendea
+                        </h2>
+                        <button
+                            onClick={toggleChat}
+                            className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+                            aria-label="Cerrar chat"
+                        >
+                            ×
+                        </button>
+                    </article>
 
-                <InputArea onSendMessage={handleMessage} disabled={isLoading}/>
-            </section>
+                    <div
+                        aria-live="polite"
+                        role="log"
+                        className="messages-list p-4 gap-3 flex flex-col overflow-y-auto flex-1"
+                    >
+                        {messages.map((message, index) => {
+                            // Encontrar el índice del último mensaje que no es del usuario
+                            const lastNonUserMessageIndex = messages
+                                .map((msg, i) => ({ msg, index: i }))
+                                .filter(({ msg }) => msg.role !== Author.USER)
+                                .pop()?.index;
+                            
+                            const isLastMessage = index === lastNonUserMessageIndex && message.role !== Author.USER;
+                            
+                            return (
+                                <Message
+                                    key={`${message.role}-${index}`}
+                                    content={message.content}
+                                    timestamp={message.timestamp}
+                                    role={message.role}
+                                    img={message.img}
+                                    isLastMessage={isLastMessage}
+                                />
+                            );
+                        })}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    <InputArea onSendMessage={handleMessage} disabled={isLoading}/>
+                </section>
+            )}
         </section>
     );
 };

@@ -28,7 +28,7 @@ export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) =
             data-testid="input-area"
         >
             <textarea
-                className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm"
+                className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm resize-none"
                 placeholder="Escribe un mensaje..."
                 id="message-input"
                 name="message-input"

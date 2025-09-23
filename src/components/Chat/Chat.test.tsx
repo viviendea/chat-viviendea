@@ -44,7 +44,7 @@ beforeEach(() => {
 });
 
 describe("Chat Component", () => {
-    it("renders correctly with initial messages", () => {
+    it("renders chat toggle button when chat is closed", () => {
         render(
             <Chat
                 initialMessages={[
@@ -58,9 +58,66 @@ describe("Chat Component", () => {
             />
         );
 
+        // El chat debe estar cerrado inicialmente
+        expect(screen.getByRole("button", { name: "Abrir chat de Viviendea" })).toBeInTheDocument();
+        expect(screen.queryByTestId("chat-container")).not.toBeInTheDocument();
+        expect(screen.queryByText("Chat de Viviendea")).not.toBeInTheDocument();
+    });
+
+    it("opens chat when toggle button is clicked", async () => {
+        const user = userEvent.setup();
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Mensaje inicial",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+            />
+        );
+
+        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
+        await user.click(toggleButton);
+
+        // Verificar que el chat se abre
         expect(screen.getByTestId("chat-container")).toBeInTheDocument();
         expect(screen.getByText("Mensaje inicial")).toBeInTheDocument();
         expect(screen.getByText("Chat de Viviendea")).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Abrir chat de Viviendea" })).not.toBeInTheDocument();
+    });
+
+    it("closes chat when close button is clicked", async () => {
+        const user = userEvent.setup();
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Mensaje inicial",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+            />
+        );
+
+        // Abrir el chat primero
+        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
+        await user.click(toggleButton);
+
+        // Verificar que está abierto
+        expect(screen.getByTestId("chat-container")).toBeInTheDocument();
+
+        // Cerrar el chat
+        const closeButton = screen.getByRole("button", { name: "Cerrar chat" });
+        await user.click(closeButton);
+
+        // Verificar que se cierra
+        expect(screen.queryByTestId("chat-container")).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Abrir chat de Viviendea" })).toBeInTheDocument();
     });
 
     it("handles message sending flow correctly", async () => {
@@ -75,6 +132,10 @@ describe("Chat Component", () => {
         mockSendMessage.mockReturnValue(promise);
 
         render(<Chat initialMessages={[]} />);
+
+        // Abrir el chat primero
+        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
+        await user.click(toggleButton);
 
         const textarea = screen.getByTestId("message-textarea");
         const sendButton = screen.getByTestId("send-button");
@@ -116,6 +177,10 @@ describe("Chat Component", () => {
 
         render(<Chat initialMessages={[]} />);
 
+        // Abrir el chat primero
+        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
+        await user.click(toggleButton);
+
         const textarea = screen.getByTestId("message-textarea");
         const sendButton = screen.getByTestId("send-button");
 
@@ -138,6 +203,10 @@ describe("Chat Component", () => {
         mockSendMessage.mockReturnValue(new Promise(() => {}));
 
         render(<Chat initialMessages={[]} />);
+
+        // Abrir el chat primero
+        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
+        await user.click(toggleButton);
 
         const textarea = screen.getByTestId("message-textarea");
         const sendButton = screen.getByTestId("send-button");
