@@ -95,20 +95,20 @@
         }
     </style>
     
-    <!-- Incluir CSS del widget desde jsDelivr CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-viviendea.css">
+    <!-- Incluir CSS del widget desde GitHub Pages -->
+    <link rel="stylesheet" href="https://viviendea.github.io/chat-viviendea/chat-viviendea.css">
 </head>
 <body>
     <div class="container">
-        <h1>🌐 Demo CDN - Chat Viviendea Widget</h1>
+        <h1>🌐 Demo CDN - Chat Viviendea Widget (GitHub Pages)</h1>
         
         <div class="status info" id="loading-status">
-            ⏳ Cargando widget desde jsDelivr CDN...
+            ⏳ Cargando widget desde GitHub Pages...
         </div>
         
         <div class="demo-section">
             <h3>📝 Descripción</h3>
-            <p>Este ejemplo carga el widget directamente desde jsDelivr CDN. <strong>Nota:</strong> Necesitas haber creado un release en GitHub para que funcione.</p>
+            <p>Este ejemplo carga el widget desde GitHub Pages, que resuelve los problemas de CORS. <strong>Nota:</strong> GitHub Pages se actualiza automáticamente cuando cambias los archivos en widget-dist.</p>
         </div>
         
         <div class="demo-section">
@@ -121,7 +121,27 @@
         
         <div class="demo-section">
             <h3>💻 Código de integración</h3>
-            <p>Para integrar este widget en tu sitio web, simplemente agrega:</p>
+            <p>Para integrar este widget en tu sitio web, puedes usar cualquiera de estas opciones:</p>
+            
+            <h4>Opción 1: GitHub Pages (funciona inmediatamente, sin CORS)</h4>
+            <div class="code">
+&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="https://viviendea.github.io/chat-viviendea/chat-viviendea.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="https://viviendea.github.io/chat-viviendea/chat-widget.umd.js"&gt;&lt;/script&gt;
+
+&lt;!-- Inicialización --&gt;
+&lt;script&gt;
+  window.initChatWidget({
+    position: 'bottom-right',
+    width: '400px',
+    height: '600px'
+  });
+&lt;/script&gt;
+            </div>
+            
+            <h4>Opción 2: JSDeliver CDN (recomendado cuando esté disponible)</h4>
             <div class="code">
 &lt;!-- CSS --&gt;
 &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-viviendea.css"&gt;
@@ -165,8 +185,8 @@
         </div>
     </div>
     
-    <!-- Incluir JavaScript del widget desde jsDelivr CDN -->
-    <script src="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-widget.umd.js"></script>
+    <!-- Incluir JavaScript del widget desde GitHub Pages -->
+    <script src="https://viviendea.github.io/chat-viviendea/chat-widget.umd.js"></script>
     
     <script>
         let chatWidget = null;
@@ -271,8 +291,8 @@
         });
         
         // Log de depuración
-        console.log('🌐 Intentando cargar Chat Viviendea Widget desde jsDelivr CDN');
-        console.log('📦 URL: https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-widget.umd.js');
+        console.log('🌐 Intentando cargar Chat Viviendea Widget desde GitHub Pages');
+        console.log('📦 URL: https://viviendea.github.io/chat-viviendea/chat-widget.umd.js');
     </script>
 </body>
 </html>

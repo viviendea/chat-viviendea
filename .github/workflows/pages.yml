@@ -1,0 +1,76 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'widget-dist/**'
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Create Pages content
+        run: |
+          mkdir -p _site
+          cp -r widget-dist/* _site/
+          
+          # Crear un index.html simple
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Chat Viviendea Widget CDN</title>
+              <style>
+                  body { font-family: Arial, sans-serif; padding: 20px; }
+                  .file-list { list-style: none; padding: 0; }
+                  .file-list li { margin: 10px 0; }
+                  .file-list a { text-decoration: none; color: #0066cc; }
+                  .file-list a:hover { text-decoration: underline; }
+              </style>
+          </head>
+          <body>
+              <h1>Chat Viviendea Widget CDN</h1>
+              <p>Archivos disponibles del widget:</p>
+              <ul class="file-list">
+                  <li><a href="chat-widget.umd.js">chat-widget.umd.js</a> - Versión UMD para uso directo</li>
+                  <li><a href="chat-widget.es.js">chat-widget.es.js</a> - Versión ES Modules</li>
+                  <li><a href="chat-viviendea.css">chat-viviendea.css</a> - Estilos CSS</li>
+              </ul>
+              <h2>Uso:</h2>
+              <pre><code>&lt;link rel="stylesheet" href="https://viviendea.github.io/chat-viviendea/chat-viviendea.css"&gt;
+          &lt;script src="https://viviendea.github.io/chat-viviendea/chat-widget.umd.js"&gt;&lt;/script&gt;</code></pre>
+          </body>
+          </html>
+          EOF
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
