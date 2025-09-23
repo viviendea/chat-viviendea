@@ -93,7 +93,7 @@ const Chat = ({
                 // Icono circular flotante
                 <button
                     onClick={toggleChat}
-                    className="chat-toggle-btn absolute bottom-6 right-6 w-16 h-16 bg-white hover:scale-110 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-50 cursor-pointer"
+                    className="chat-toggle-btn absolute bottom-6 right-6 w-16 h-16 bg-white hover:scale-110 rounded-full border border-gray-300 flex items-center justify-center transition-all duration-300 z-50 cursor-pointer"
                     aria-label="Abrir chat de Viviendea"
                 >
                     <img 
@@ -116,7 +116,7 @@ const Chat = ({
                         </h2>
                         <button
                             onClick={toggleChat}
-                            className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+                            className="text-gray-500 hover:text-gray-700 text-xl font-bold cursor-pointer"
                             aria-label="Cerrar chat"
                         >
                             ×
