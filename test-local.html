@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Local - Chat Viviendea Widget</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+        }
+    </style>
+    <!-- Usar archivos locales -->
+    <link rel="stylesheet" href="./widget-dist/chat-viviendea.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Local - Chat Toggle</h1>
+        <p>Este test usa los archivos locales del widget para verificar que el toggle funcione correctamente.</p>
+        <p><strong>Esperado:</strong> Debería aparecer solo un botón flotante circular inicialmente.</p>
+    </div>
+
+    <!-- Usar archivo local -->
+    <script src="./widget-dist/chat-widget.umd.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Testing widget locally...');
+            
+            if (typeof window.ChatViviendea !== 'undefined') {
+                console.log('✅ ChatViviendea disponible localmente');
+                
+                // Inicializar widget
+                const chatWidget = new window.ChatViviendea({
+                    position: 'bottom-right',
+                    width: '400px',
+                    height: '600px'
+                });
+                
+                chatWidget.init();
+                console.log('✅ Widget inicializado localmente:', chatWidget);
+            } else {
+                console.error('❌ ChatViviendea no disponible localmente');
+            }
+        });
+    </script>
+</body>
+</html>
