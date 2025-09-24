@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface InputAreaProps {
     onSendMessage?: (message: string) => void;
@@ -7,6 +7,14 @@ interface InputAreaProps {
 
 export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) => {
     const [message, setMessage] = useState('');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Asegurar que el textarea tenga foco inicial
+    useEffect(() => {
+        if (textareaRef.current && !disabled) {
+            textareaRef.current.focus();
+        }
+    }, [disabled]);
 
     const handleSend = () => {
         if (message.trim() && onSendMessage && !disabled) {
@@ -15,10 +23,21 @@ export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) =
         }
     };
 
+    // Mantener foco después de cambios en el mensaje
+    useEffect(() => {
+        if (textareaRef.current && !disabled) {
+            textareaRef.current.focus();
+        }
+    }, [message, disabled]);
+
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey && !disabled) {
             e.preventDefault();
             handleSend();
+            // Asegurar que el foco se mantenga después del keypress
+            setTimeout(() => {
+                textareaRef.current?.focus();
+            }, 10);
         }
     };
 
@@ -28,6 +47,7 @@ export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) =
             data-testid="input-area"
         >
             <textarea
+                ref={textareaRef}
                 className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm resize-none"
                 placeholder="Escribe un mensaje..."
                 id="message-input"
