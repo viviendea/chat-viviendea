@@ -23,19 +23,8 @@ const Chat = ({
         setTimeout(() => {
             if (messagesListRef.current) {
                 const element = messagesListRef.current;
-                console.log('Scroll Debug:', {
-                    scrollHeight: element.scrollHeight,
-                    clientHeight: element.clientHeight,
-                    scrollTop: element.scrollTop,
-                    needsScroll: element.scrollHeight > element.clientHeight
-                });
-                
                 // Scroll directo al final
                 element.scrollTop = element.scrollHeight;
-                
-                console.log('Después del scroll:', element.scrollTop);
-            } else {
-                console.log('messagesListRef.current es null');
             }
         }, 200);
     };
