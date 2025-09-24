@@ -6,6 +6,43 @@ import { useTypingLoop } from "../../hooks/useTypingLoop";
 const DEFAULT_CONTENT =
     "¡Hola! Soy Ele y voy a guiarte en el diseño de tu vivienda ideal. Pero primero empezemos por lo más importante, ¿Dónde te gustaría vivir?";
 
+// Función para procesar markdown básico en una línea
+const processMarkdownLine = (line: string) => {
+    // Procesar texto en negrita **texto**
+    let processedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Procesar texto en cursiva *texto*
+    processedLine = processedLine.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Procesar listas con guiones
+    if (processedLine.trim().startsWith('- ')) {
+        processedLine = processedLine.replace(/^- /, '• ');
+        return <div className="ml-4 my-1" dangerouslySetInnerHTML={{ __html: processedLine }} />;
+    }
+    
+    // Si no hay markdown especial, devolver como span normal
+    if (processedLine === line) {
+        return line;
+    }
+    
+    // Devolver con HTML procesado
+    return <span dangerouslySetInnerHTML={{ __html: processedLine }} />;
+};
+
+// Función para procesar el texto y convertir caracteres de escape + markdown
+const processMessageText = (text: string) => {
+    return text
+        .replace(/\\n/g, '\n') // Convertir \n literal a salto de línea
+        .split('\n') // Dividir por saltos de línea
+        .map((line, index, array) => (
+            <div key={index} className={line.trim() === '' ? 'h-4' : ''}>
+                {line.trim() === '' ? null : processMarkdownLine(line)}
+                {/* Solo agregar espacio extra si no es la última línea */}
+                {index < array.length - 1 && line.trim() === '' && <br />}
+            </div>
+        ));
+};
+
 const Message = ({
     content = DEFAULT_CONTENT,
     role = Author.ELE,
@@ -82,9 +119,9 @@ const Message = ({
                                 />
                             </div>
                         )}
-                        <p className="text-white">
-                            {messageContent}
-                        </p>
+                        <div className="text-white">
+                            {processMessageText(messageContent)}
+                        </div>
                     </article>
 
                     <footer className={messageClasses.footer}>
