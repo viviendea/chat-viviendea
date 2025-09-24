@@ -7,13 +7,6 @@ import { getChatIconPath } from "../../utils/assets";
 
 const Chat = ({
     initialMessages = [
-        { content: "Hola", role: Author.ELE, timestamp: new Date(), img: null },
-        {
-            content: "¡Hola! ¿En qué puedo ayudarte?",
-            role: Author.ELE,
-            timestamp: new Date(),
-            img: null,
-        },
     ],
 }: {
     initialMessages?: MessageType[];
@@ -21,18 +14,84 @@ const Chat = ({
     const [messages, setMessages] = useState<MessageType[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
+    const [lastUserMessageIndexWithError, setLastUserMessageIndexWithError] = useState<number | null>(null);
+    const isSessionInitialized = useRef(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const messagesListRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => {
+            if (messagesListRef.current) {
+                const element = messagesListRef.current;
+                console.log('Scroll Debug:', {
+                    scrollHeight: element.scrollHeight,
+                    clientHeight: element.clientHeight,
+                    scrollTop: element.scrollTop,
+                    needsScroll: element.scrollHeight > element.clientHeight
+                });
+                
+                // Scroll directo al final
+                element.scrollTop = element.scrollHeight;
+                
+                console.log('Después del scroll:', element.scrollTop);
+            } else {
+                console.log('messagesListRef.current es null');
+            }
+        }, 200);
     };
 
+    // Scroll automático cada vez que cambian los mensajes
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
+    // Scroll cuando se abre el chat
+    useEffect(() => {
+        if (isChatOpen && messages.length > 0) {
+            scrollToBottom();
+        }
+    }, [isChatOpen, messages.length]);
+
+    // Inicializar sesión al montar el componente
+    useEffect(() => {
+        const initializeChat = async () => {
+            if (isSessionInitialized.current) return;
+            
+            isSessionInitialized.current = true;
+            
+            const initResponse = await chatApiService.initializeSession();
+            
+            if (initResponse && initResponse.message) {
+                // Agregar la respuesta inicial del bot a los mensajes
+                const botInitMessage = chatApiService.createBotMessage(
+                    initResponse.message,
+                    initResponse.timestamp
+                );
+                
+                setMessages(prevMessages => [...prevMessages, botInitMessage]);
+                
+                // Scroll para el mensaje inicial
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 300);
+            }
+        };
+
+        initializeChat();
+    }, []); // Sin dependencias para que solo se ejecute una vez al montar
+
     const toggleChat = () => {
         setIsChatOpen(!isChatOpen);
+    };
+
+    const handleResendMessage = (messageIndex: number) => {
+        const messageToResend = messages[messageIndex];
+        if (messageToResend && messageToResend.role === Author.USER && !isLoading) {
+            // Resetear el estado de error inmediatamente
+            setLastUserMessageIndexWithError(null);
+            // Reenviar el mensaje
+            handleMessage(messageToResend.content);
+        }
     };
 
     const handleMessage = async (message: string) => {
@@ -46,42 +105,71 @@ const Chat = ({
             timestamp: new Date(),
             img: null,
         };
-        
+
         // Agregar el mensaje del usuario inmediatamente
-        setMessages(prevMessages => [...prevMessages, userMessage]);
-        
+        setMessages((prevMessages) => [...prevMessages, userMessage]);
+
         // Establecer estado de carga y agregar mensaje de loader
         setIsLoading(true);
         const loadingMessage = chatApiService.createLoadingMessage();
-        
-        setMessages(prevMessages => [...prevMessages, loadingMessage]);
+        const loadingStartTime = Date.now();
+
+        setMessages((prevMessages) => [...prevMessages, loadingMessage]);
 
         try {
             // Enviar mensaje a la API
             const apiResponse = await chatApiService.sendMessage({
                 message: message,
-                userId: 'user-123', // En producción esto vendría del contexto de usuario
-                conversationId: 'conversation-123' // En producción esto se manejaría dinámicamente
+                userId: "user-123", // En producción esto vendría del contexto de usuario
+                conversationId: "conversation-123", // En producción esto se manejaría dinámicamente
             });
 
+            // Calcular tiempo transcurrido y asegurar mínimo 1 segundo de "Escribiendo..."
+            const elapsedTime = Date.now() - loadingStartTime;
+            const minLoadingTime = 1000; // 1 segundo mínimo
+            const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+
+            // Esperar el tiempo restante si es necesario
+            if (remainingTime > 0) {
+                await new Promise(resolve => setTimeout(resolve, remainingTime));
+            }
+
             // Remover mensaje de loading y agregar respuesta del bot
-            setMessages(prevMessages => {
+            setMessages((prevMessages) => {
                 const messagesWithoutLoading = prevMessages.slice(0, -1);
                 const botResponse = chatApiService.createBotMessage(
-                    apiResponse.response, 
+                    apiResponse.message,
                     apiResponse.timestamp
                 );
                 return [...messagesWithoutLoading, botResponse];
             });
 
+            // Limpiar el estado de error ya que la respuesta fue exitosa
+            setLastUserMessageIndexWithError(null);
+
+            // El scroll se hace automáticamente por el useEffect cuando cambian los mensajes
         } catch (error) {
             // En caso de error, remover loading y mostrar mensaje de error
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            
-            setMessages(prevMessages => {
+            const errorMessage =
+                error instanceof Error ? error.message : "Error desconocido";
+
+            setMessages((prevMessages) => {
                 const messagesWithoutLoading = prevMessages.slice(0, -1);
-                const errorResponse = chatApiService.createErrorMessage(errorMessage);
+                const errorResponse =
+                    chatApiService.createErrorMessage(errorMessage);
                 return [...messagesWithoutLoading, errorResponse];
+            });
+
+            // Guardar el índice del último mensaje del usuario que causó el error
+            setMessages((prevMessages) => {
+                // Encontrar el índice del último mensaje del usuario
+                for (let i = prevMessages.length - 1; i >= 0; i--) {
+                    if (prevMessages[i].role === Author.USER) {
+                        setLastUserMessageIndexWithError(i);
+                        break;
+                    }
+                }
+                return prevMessages;
             });
         } finally {
             setIsLoading(false);
@@ -96,10 +184,10 @@ const Chat = ({
                     className="chat-toggle-btn absolute bottom-6 right-6 w-16 h-16 bg-white hover:scale-110 rounded-full border border-gray-300 flex items-center justify-center transition-all duration-300 z-50 cursor-pointer"
                     aria-label="Abrir chat de Viviendea"
                 >
-                    <img 
-                        className="w-8 h-8" 
-                        src={getChatIconPath()} 
-                        alt="Chat de Viviendea" 
+                    <img
+                        className="w-8 h-8"
+                        src={getChatIconPath()}
+                        alt="Chat de Viviendea"
                     />
                 </button>
             ) : (
@@ -110,7 +198,11 @@ const Chat = ({
                     data-testid="chat-container"
                 >
                     <article className="chat-header w-full flex items-center gap-4 px-4 py-3 border-b border-gray-300 bg-white rounded-t-lg">
-                        <img className="w-8 h-8" src={getChatIconPath()} alt="" />
+                        <img
+                            className="w-8 h-8"
+                            src={getChatIconPath()}
+                            alt=""
+                        />
                         <h2 className="text-principal font-bold text-lg flex-1">
                             Chat de Viviendea
                         </h2>
@@ -124,34 +216,37 @@ const Chat = ({
                     </article>
 
                     <div
+                        ref={messagesListRef}
                         aria-live="polite"
                         role="log"
-                        className="messages-list p-4 gap-3 flex flex-col overflow-y-auto flex-1"
+                        className="messages-list p-4 gap-3 flex flex-col overflow-y-auto"
+                        style={{ 
+                            scrollBehavior: "smooth", 
+                            overflowAnchor: "none",
+                            height: "400px",
+                            maxHeight: "400px",
+                            minHeight: "400px",
+                            flexShrink: 1
+                        }}
                     >
-                        {messages.map((message, index) => {
-                            // Encontrar el índice del último mensaje que no es del usuario
-                            const lastNonUserMessageIndex = messages
-                                .map((msg, i) => ({ msg, index: i }))
-                                .filter(({ msg }) => msg.role !== Author.USER)
-                                .pop()?.index;
-                            
-                            const isLastMessage = index === lastNonUserMessageIndex && message.role !== Author.USER;
-                            
-                            return (
-                                <Message
-                                    key={`${message.role}-${index}`}
-                                    content={message.content}
-                                    timestamp={message.timestamp}
-                                    role={message.role}
-                                    img={message.img}
-                                    isLastMessage={isLastMessage}
-                                />
-                            );
-                        })}
+                        {messages.map((message, index) => (
+                            <Message
+                                key={`${message.role}-${index}`}
+                                content={message.content}
+                                timestamp={message.timestamp}
+                                role={message.role}
+                                img={message.img}
+                                showResendTooltip={index === lastUserMessageIndexWithError}
+                                onResend={() => handleResendMessage(index)}
+                            />
+                        ))}
                         <div ref={messagesEndRef} />
                     </div>
 
-                    <InputArea onSendMessage={handleMessage} disabled={isLoading}/>
+                    <InputArea
+                        onSendMessage={handleMessage}
+                        disabled={isLoading}
+                    />
                 </section>
             )}
         </section>

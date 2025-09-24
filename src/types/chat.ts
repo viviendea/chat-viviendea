@@ -12,6 +12,8 @@ export interface MessageType {
     timestamp: Date;
     img?: string | null | undefined;
     isLastMessage?: boolean;
+    showResendTooltip?: boolean;
+    onResend?: () => void;
 }
 
 export interface ChatState {

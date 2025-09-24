@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Author, type MessageType } from "../../types/chat";
-import { useTypewriter } from "../../hooks/useTypewriter";
 import { getAvatarPath } from "../../utils/assets";
+import { useTypingLoop } from "../../hooks/useTypingLoop";
 
 const DEFAULT_CONTENT =
     "¡Hola! Soy Ele y voy a guiarte en el diseño de tu vivienda ideal. Pero primero empezemos por lo más importante, ¿Dónde te gustaría vivir?";
@@ -11,20 +11,20 @@ const Message = ({
     role = Author.ELE,
     timestamp = new Date(),
     img = null,
-    isLastMessage = false,
+    showResendTooltip = false,
+    onResend,
 }: MessageType) => {
     const isUserMessage = role === Author.USER;
+    const isTypingMessage = content === "Escribiendo...";
     
-    // Usar efecto typewriter solo para mensajes que no sean del usuario Y que sean el último mensaje
-    const shouldUseTypewriter = !isUserMessage && isLastMessage;
-    const { displayText } = useTypewriter({
-        text: shouldUseTypewriter ? content : "",
-        speed: 50, // Más lento para ser más suave
-        startDelay: img ? 800 : 100, // Delay más largo si hay imagen para que se cargue primero
+    // Usar efecto typewriter en bucle solo para el mensaje "Escribiendo..."
+    const { displayText } = useTypingLoop({
+        enabled: isTypingMessage && !isUserMessage,
+        text: content,
     });
     
-    // Mostrar el texto con efecto typewriter o el texto completo según el tipo de mensaje
-    const messageContent = shouldUseTypewriter ? displayText : content;
+    // Mostrar texto con efecto para "Escribiendo..." o texto completo para otros mensajes
+    const messageContent = isTypingMessage && !isUserMessage ? displayText : content;
 
     const formattedTime = useMemo(
         () =>
@@ -94,6 +94,32 @@ const Message = ({
                         >
                             {`${isUserMessage ? "Enviado" : "Recibido"}: ${formattedTime} h.`}
                         </time>
+                        
+                        {/* Tooltip de reenvío para mensajes de usuario con error */}
+                        {showResendTooltip && isUserMessage && onResend && (
+                            <div className="relative inline-block ml-2">
+                                <button
+                                    onClick={onResend}
+                                    className="resend-tooltip bg-gray-400 hover:bg-gray-500 text-white text-xs px-2 py-1 rounded-4xl flex items-center gap-1 transition-colors duration-200 cursor-pointer mt-0.5"
+                                    aria-label="Reenviar mensaje"
+                                    title="Reenviar mensaje"
+                                >
+                                    <svg 
+                                        width="12" 
+                                        height="12" 
+                                        viewBox="0 0 24 24" 
+                                        fill="none" 
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path 
+                                            d="M4 12a8 8 0 0 1 8-8V2.5L16 6l-4 3.5V8a6 6 0 1 0 6 6h1.5a7.5 7.5 0 1 1-7.5-7.5z" 
+                                            fill="currentColor"
+                                        />
+                                    </svg>
+                                    Reenviar
+                                </button>
+                            </div>
+                        )}
                     </footer>
                 </div>
             </div>

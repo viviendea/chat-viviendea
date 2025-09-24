@@ -3,37 +3,91 @@ import { Author, type MessageType } from '../types/chat';
 
 // Configuración base de axios
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
+  baseURL:  import.meta.env.VITE_API_BASE_URL || 'https://477d4vfzfvjwsndbzxp4luxbpa0dthak.lambda-url.eu-west-3.on.aws/',
   timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // Removemos las cabeceras por defecto
 });
 
 export interface ApiMessageRequest {
   message: string;
   userId?: string;
   conversationId?: string;
+  session_jwt?: string;
 }
 
 export interface ApiMessageResponse {
-  response: string;
+  message: string;
+  session_jwt?: string;
+  user_answers?: Record<string, unknown>;
+  is_finished?: boolean;
+  current_step?: string;
+  expecting_open_response?: boolean;
   timestamp?: string | Date;
   conversationId?: string;
   metadata?: Record<string, unknown>;
 }
 
 export const chatApiService = {
+  // Variable privada para almacenar el JWT de sesión
+  _sessionJWT: null as string | null,
+
+  /**
+   * Inicializa la sesión del chat enviando un mensaje de inicio
+   */
+  async initializeSession(): Promise<ApiMessageResponse | null> {
+    try {
+      const initRequest = {
+        message: "hol",
+        userId: "user-123",
+        conversationId: "conversation-123"
+      };
+      
+      const response = await apiClient.post<ApiMessageResponse>('', initRequest);
+      
+      if (response.data.session_jwt) {
+        this._sessionJWT = response.data.session_jwt;
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error('Error al inicializar sesión:', error);
+      return null;
+    }
+  },
+
   /**
    * Envía un mensaje a la API y retorna la respuesta del bot
    */
   async sendMessage(request: ApiMessageRequest): Promise<ApiMessageResponse> {
     try {
-      const response = await apiClient.post<ApiMessageResponse>('', request);
+      // Incluir el JWT de sesión si está disponible
+      const requestWithJWT: ApiMessageRequest = {
+        ...request,
+        session_jwt: this._sessionJWT || undefined,
+      };
+      
+      const response = await apiClient.post<ApiMessageResponse>('', requestWithJWT);
+      
+      // Actualizar el JWT si viene uno nuevo en la respuesta
+      if (response.data.session_jwt) {
+        this._sessionJWT = response.data.session_jwt;
+      }
+      
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        // Manejo específico de errores de CORS
+        if (error.code === 'ERR_NETWORK' && error.message.includes('fetch')) {
+          throw new Error('Error de CORS: La lambda no permite peticiones desde este dominio');
+        }
+        
         const message = error.response?.data?.message || error.message || 'Error de conexión';
+        console.error('Error details:', {
+          code: error.code,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          message: error.message
+        });
         throw new Error(`Error en la API: ${message}`);
       }
       throw new Error('Error inesperado al comunicarse con la API');
@@ -62,6 +116,13 @@ export const chatApiService = {
       timestamp: timestamp ? new Date(timestamp) : new Date(),
       img: null,
     };
+  },
+
+  /**
+   * Resetea la sesión (útil para testing o logout)
+   */
+  resetSession(): void {
+    this._sessionJWT = null;
   },
 
   /**

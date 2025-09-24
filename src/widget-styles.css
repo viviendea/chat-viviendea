@@ -145,3 +145,33 @@
 .messages-list::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Estilos para el tooltip de reenvío */
+.resend-tooltip {
+  animation: fadeInUp 0.3s ease-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.resend-tooltip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.resend-tooltip svg {
+  transition: transform 0.2s ease;
+}
+
+.resend-tooltip:hover svg {
+  transform: rotate(180deg);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
