@@ -5,11 +5,10 @@ import Chat from "./Chat";
 import { Author } from "../../types/chat";
 import { chatApiService } from "../../services/chatApi";
 
-// Mock del hook useTypewriter para evitar problemas con la animación en tests
-vi.mock("../../hooks/useTypewriter", () => ({
-    useTypewriter: vi.fn(({ text }: { text: string }) => ({
+// Mock del hook useTypingLoop para evitar problemas con la animación en tests
+vi.mock("../../hooks/useTypingLoop", () => ({
+    useTypingLoop: vi.fn(({ text }: { text: string }) => ({
         displayText: text, // Devolver el texto completo inmediatamente
-        isComplete: true,
     })),
 }));
 
@@ -17,6 +16,7 @@ vi.mock("../../hooks/useTypewriter", () => ({
 vi.mock("../../services/chatApi", () => ({
     chatApiService: {
         sendMessage: vi.fn(),
+        initializeSession: vi.fn(() => Promise.resolve(null)),
         createLoadingMessage: vi.fn(() => ({
             content: "Escribiendo...",
             role: Author.ELE,
@@ -125,8 +125,8 @@ describe("Chat Component", () => {
         const mockSendMessage = vi.mocked(chatApiService.sendMessage);
         
         // Mock con promesa controlable
-        let resolvePromise!: (value: { response: string; conversationId: string }) => void;
-        const promise = new Promise<{ response: string; conversationId: string }>((resolve) => {
+        let resolvePromise!: (value: { message: string; conversationId: string; timestamp: string }) => void;
+        const promise = new Promise<{ message: string; conversationId: string; timestamp: string }>((resolve) => {
             resolvePromise = resolve;
         });
         mockSendMessage.mockReturnValue(promise);
@@ -159,7 +159,7 @@ describe("Chat Component", () => {
         });
 
         // Resolver respuesta
-        resolvePromise({ response: "Bot response", conversationId: "conv-123" });
+        resolvePromise({ message: "Bot response", conversationId: "conv-123", timestamp: new Date().toISOString() });
 
         // Verificar resultado final
         await waitFor(() => {
