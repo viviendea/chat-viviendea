@@ -1,12 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 
 interface InputAreaProps {
     onSendMessage?: (message: string) => void;
     disabled?: boolean;
 }
 
-export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) => {
-    const [message, setMessage] = useState('');
+export const InputArea = ({
+    onSendMessage,
+    disabled = false,
+}: InputAreaProps) => {
+    const [message, setMessage] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Asegurar que el textarea tenga foco inicial
@@ -19,7 +22,7 @@ export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) =
     const handleSend = () => {
         if (message.trim() && onSendMessage && !disabled) {
             onSendMessage(message.trim());
-            setMessage('');
+            setMessage("");
         }
     };
 
@@ -31,7 +34,7 @@ export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) =
     }, [message, disabled]);
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey && !disabled) {
+        if (e.key === "Enter" && !e.shiftKey && !disabled) {
             e.preventDefault();
             handleSend();
             // Asegurar que el foco se mantenga después del keypress
@@ -62,18 +65,18 @@ export const InputArea = ({ onSendMessage, disabled = false }: InputAreaProps) =
             />
 
             <button
-                className="bg-gray-300 text-gray-600 hover:bg-principal hover:text-white active:bg-principal active:text-white rounded-full transition-colors w-[40px] h-[40px] flex items-center justify-center ml-2 self-end cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gray-300 text-gray-600 hover:bg-principal hover:text-white active:bg-principal active:text-white rounded-full transition-colors w-[36px] h-[36px] flex items-center justify-center ml-2 self-end cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
                 data-testid="send-button"
                 onClick={handleSend}
                 disabled={!message.trim() || disabled}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 620 620"
                     fill="currentColor"
-                    className="w-[20px] h-[20px]"
-                    viewBox="0 0 20 20"
+                    className="w-5 h-5 text-principal group-hover:text-white"
                 >
-                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+                    <path d="M322.5 351.7L523.4 150.9L391 520.3L322.5 351.7zM489.4 117L288.6 317.8L120 249.3L489.4 117zM70.1 280.8L275.9 364.4L359.5 570.2C364.8 583.3 377.6 591.9 391.8 591.9C406.5 591.9 419.6 582.7 424.6 568.8L602.6 72C606.1 62.2 603.6 51.4 596.3 44C589 36.6 578.1 34.2 568.3 37.7L71.4 215.7C57.5 220.7 48.3 233.8 48.3 248.5C48.3 262.7 56.9 275.5 70 280.8z" />
                 </svg>
             </button>
         </div>
