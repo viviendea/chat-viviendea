@@ -6,15 +6,15 @@ import { chatApiService } from "../../services/chatApi";
 import { getChatIconPath } from "../../utils/assets";
 
 const Chat = ({
-    initialMessages = [
-    ],
+    initialMessages = [],
 }: {
     initialMessages?: MessageType[];
 }) => {
     const [messages, setMessages] = useState<MessageType[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
-    const [lastUserMessageIndexWithError, setLastUserMessageIndexWithError] = useState<number | null>(null);
+    const [lastUserMessageIndexWithError, setLastUserMessageIndexWithError] =
+        useState<number | null>(null);
     const isSessionInitialized = useRef(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesListRef = useRef<HTMLDivElement>(null);
@@ -45,20 +45,23 @@ const Chat = ({
     useEffect(() => {
         const initializeChat = async () => {
             if (isSessionInitialized.current) return;
-            
+
             isSessionInitialized.current = true;
-            
+
             const initResponse = await chatApiService.initializeSession();
-            
+
             if (initResponse && initResponse.message) {
                 // Agregar la respuesta inicial del bot a los mensajes
                 const botInitMessage = chatApiService.createBotMessage(
                     initResponse.message,
                     initResponse.timestamp
                 );
-                
-                setMessages(prevMessages => [...prevMessages, botInitMessage]);
-                
+
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    botInitMessage,
+                ]);
+
                 // Scroll para el mensaje inicial
                 setTimeout(() => {
                     scrollToBottom();
@@ -75,7 +78,11 @@ const Chat = ({
 
     const handleResendMessage = (messageIndex: number) => {
         const messageToResend = messages[messageIndex];
-        if (messageToResend && messageToResend.role === Author.USER && !isLoading) {
+        if (
+            messageToResend &&
+            messageToResend.role === Author.USER &&
+            !isLoading
+        ) {
             // Resetear el estado de error inmediatamente
             setLastUserMessageIndexWithError(null);
             // Reenviar el mensaje
@@ -120,7 +127,9 @@ const Chat = ({
 
             // Esperar el tiempo restante si es necesario
             if (remainingTime > 0) {
-                await new Promise(resolve => setTimeout(resolve, remainingTime));
+                await new Promise((resolve) =>
+                    setTimeout(resolve, remainingTime)
+                );
             }
 
             // Remover mensaje de loading y agregar respuesta del bot
@@ -128,7 +137,9 @@ const Chat = ({
                 const messagesWithoutLoading = prevMessages.slice(0, -1);
                 const botResponse = chatApiService.createBotMessage(
                     apiResponse.message,
-                    apiResponse.timestamp
+                    apiResponse.timestamp,
+                    apiResponse.imagen,
+                    apiResponse.role,
                 );
                 return [...messagesWithoutLoading, botResponse];
             });
@@ -209,13 +220,13 @@ const Chat = ({
                         aria-live="polite"
                         role="log"
                         className="messages-list p-4 gap-3 flex flex-col overflow-y-auto"
-                        style={{ 
-                            scrollBehavior: "smooth", 
+                        style={{
+                            scrollBehavior: "smooth",
                             overflowAnchor: "none",
                             height: "400px",
                             maxHeight: "400px",
                             minHeight: "400px",
-                            flexShrink: 1
+                            flexShrink: 1,
                         }}
                     >
                         {messages.map((message, index) => (
@@ -225,7 +236,9 @@ const Chat = ({
                                 timestamp={message.timestamp}
                                 role={message.role}
                                 img={message.img}
-                                showResendTooltip={index === lastUserMessageIndexWithError}
+                                showResendTooltip={
+                                    index === lastUserMessageIndexWithError
+                                }
                                 onResend={() => handleResendMessage(index)}
                             />
                         ))}
