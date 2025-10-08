@@ -135,9 +135,9 @@ export const chatApiService = {
     ): MessageType {
         return {
             content,
-            role,
             timestamp: timestamp ? new Date(timestamp) : new Date(),
             img: img || null,
+            role,
         };
     },
 
