@@ -4,7 +4,6 @@ import { InputArea } from "../InputArea/InputArea";
 import Message from "../Message/Message";
 import { chatApiService } from "../../services/chatApi";
 import { getChatIconPath } from "../../utils/assets";
-import { log } from "console";
 
 const Chat = ({
     initialMessages = [],
