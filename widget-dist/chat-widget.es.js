@@ -12271,9 +12271,9 @@ const {
   createBotMessage(i, c, A, s = Cl.ELE) {
     return {
       content: i,
-      role: s,
       timestamp: c ? new Date(c) : /* @__PURE__ */ new Date(),
-      img: A || null
+      img: A || null,
+      role: s
     };
   },
   /**
