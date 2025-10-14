@@ -4,6 +4,7 @@ import { InputArea } from "../InputArea/InputArea";
 import Message from "../Message/Message";
 import { chatApiService } from "../../services/chatApi";
 import { getChatIconPath } from "../../utils/assets";
+import { log } from "console";
 
 const Chat = ({
     initialMessages = [],
@@ -139,8 +140,10 @@ const Chat = ({
                     apiResponse.message,
                     apiResponse.timestamp,
                     apiResponse.imagen,
-                    apiResponse.role,
+                    apiResponse.role
                 );
+                console.log("Bot response:", botResponse);
+                console.log("img", apiResponse.imagen);
                 return [...messagesWithoutLoading, botResponse];
             });
 
