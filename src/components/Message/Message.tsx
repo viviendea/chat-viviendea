@@ -1,47 +1,12 @@
 import { useMemo } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Author, type MessageType } from "../../types/chat";
 import { getAvatarPath } from "../../utils/assets";
 import { useTypingLoop } from "../../hooks/useTypingLoop";
 
 const DEFAULT_CONTENT =
     "¡Hola! Soy Ele y voy a guiarte en el diseño de tu vivienda ideal. Pero primero empezemos por lo más importante, ¿Dónde te gustaría vivir?";
-
-// Función para procesar markdown básico en una línea
-const processMarkdownLine = (line: string) => {
-    // Procesar texto en negrita **texto**
-    let processedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
-    // Procesar texto en cursiva *texto*
-    processedLine = processedLine.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    
-    // Procesar listas con guiones
-    if (processedLine.trim().startsWith('- ')) {
-        processedLine = processedLine.replace(/^- /, '• ');
-        return <div className="ml-4 my-1" dangerouslySetInnerHTML={{ __html: processedLine }} />;
-    }
-    
-    // Si no hay markdown especial, devolver como span normal
-    if (processedLine === line) {
-        return line;
-    }
-    
-    // Devolver con HTML procesado
-    return <span dangerouslySetInnerHTML={{ __html: processedLine }} />;
-};
-
-// Función para procesar el texto y convertir caracteres de escape + markdown
-const processMessageText = (text: string) => {
-    return text
-        .replace(/\\n/g, '\n') // Convertir \n literal a salto de línea
-        .split('\n') // Dividir por saltos de línea
-        .map((line, index, array) => (
-            <div key={index} className={line.trim() === '' ? 'h-4' : ''}>
-                {line.trim() === '' ? null : processMarkdownLine(line)}
-                {/* Solo agregar espacio extra si no es la última línea */}
-                {index < array.length - 1 && line.trim() === '' && <br />}
-            </div>
-        ));
-};
 
 const Message = ({
     content = DEFAULT_CONTENT,
@@ -119,8 +84,25 @@ const Message = ({
                                 />
                             </div>
                         )}
-                        <div className="text-white">
-                            {processMessageText(messageContent)}
+                        <div className="text-white prose prose-invert max-w-none">
+                            <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                    p: (props) => <p className="mb-2" {...props} />,
+                                    strong: (props) => <strong className="font-bold" {...props} />,
+                                    em: (props) => <em className="italic" {...props} />,
+                                    ul: (props) => <ul className="list-disc ml-4 mb-2" {...props} />,
+                                    ol: (props) => <ol className="list-decimal ml-4 mb-2" {...props} />,
+                                    li: (props) => <li className="mb-1" {...props} />,
+                                    a: (props) => <a className="underline hover:text-gray-200" {...props} />,
+                                    code: (props) => <code className="bg-gray-700 px-1 rounded" {...props} />,
+                                    h1: (props) => <h1 className="text-xl font-bold mb-2" {...props} />,
+                                    h2: (props) => <h2 className="text-lg font-bold mb-2" {...props} />,
+                                    h3: (props) => <h3 className="text-base font-bold mb-2" {...props} />,
+                                }}
+                            >
+                                {messageContent.replace(/\\n/g, '\n')}
+                            </ReactMarkdown>
                         </div>
                     </article>
 
