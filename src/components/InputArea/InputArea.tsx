@@ -51,7 +51,7 @@ export const InputArea = ({
         >
             <textarea
                 ref={textareaRef}
-                className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm resize-none"
+                className=" text-start border-principal w-full h-full p-2 border rounded-lg text-sm resize-none :focus-visible:outline-principal"
                 placeholder="Escribe un mensaje..."
                 id="message-input"
                 name="message-input"
