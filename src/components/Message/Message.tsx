@@ -158,7 +158,7 @@ const Message = ({
                             >
                                 {messageContent.replace(/\\n/g, "\n")}
                             </ReactMarkdown>
-                            {isFinished && loginUrl && (
+                            {isFinished && (
                                 <div
                                     className="mt-4 text-sm p-2 border-2 rounded-full border-white text-white cursor-pointer text-center hover:bg-white hover:text-gray-800"
                                     onClick={handleLoginClick}
