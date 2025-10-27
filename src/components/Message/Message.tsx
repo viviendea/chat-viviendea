@@ -15,18 +15,27 @@ const Message = ({
     img = null,
     showResendTooltip = false,
     onResend,
+    loginUrl,
+    isFinished = false,
 }: MessageType) => {
     const isUserMessage = role === Author.USER;
     const isTypingMessage = content === "Escribiendo...";
-    
+
+    const handleLoginClick = () => {
+        if (loginUrl) {
+            window.location.href = loginUrl;
+        }
+    };
+
     // Usar efecto typewriter en bucle solo para el mensaje "Escribiendo..."
     const { displayText } = useTypingLoop({
         enabled: isTypingMessage && !isUserMessage,
         text: content,
     });
-    
+
     // Mostrar texto con efecto para "Escribiendo..." o texto completo para otros mensajes
-    const messageContent = isTypingMessage && !isUserMessage ? displayText : content;
+    const messageContent =
+        isTypingMessage && !isUserMessage ? displayText : content;
 
     const formattedTime = useMemo(
         () =>
@@ -80,7 +89,7 @@ const Message = ({
                                     alt={`Imagen de mensaje de ${role}`}
                                     loading="eager"
                                     className="w-full h-auto max-h-[400px] object-contain rounded-lg"
-                                    style={{ minHeight: '200px' }}
+                                    style={{ minHeight: "200px" }}
                                 />
                             </div>
                         )}
@@ -88,21 +97,75 @@ const Message = ({
                             <ReactMarkdown
                                 remarkPlugins={[remarkGfm]}
                                 components={{
-                                    p: (props) => <p className="mb-2" {...props} />,
-                                    strong: (props) => <strong className="font-bold" {...props} />,
-                                    em: (props) => <em className="italic" {...props} />,
-                                    ul: (props) => <ul className="list-disc ml-4 mb-2" {...props} />,
-                                    ol: (props) => <ol className="list-decimal ml-4 mb-2" {...props} />,
-                                    li: (props) => <li className="mb-1" {...props} />,
-                                    a: (props) => <a className="underline hover:text-gray-200" {...props} />,
-                                    code: (props) => <code className="bg-gray-700 px-1 rounded" {...props} />,
-                                    h1: (props) => <h1 className="text-xl font-bold mb-2" {...props} />,
-                                    h2: (props) => <h2 className="text-lg font-bold mb-2" {...props} />,
-                                    h3: (props) => <h3 className="text-base font-bold mb-2" {...props} />,
+                                    p: (props) => (
+                                        <p className="mb-2" {...props} />
+                                    ),
+                                    strong: (props) => (
+                                        <strong
+                                            className="font-bold"
+                                            {...props}
+                                        />
+                                    ),
+                                    em: (props) => (
+                                        <em className="italic" {...props} />
+                                    ),
+                                    ul: (props) => (
+                                        <ul
+                                            className="list-disc ml-4 mb-2"
+                                            {...props}
+                                        />
+                                    ),
+                                    ol: (props) => (
+                                        <ol
+                                            className="list-decimal ml-4 mb-2"
+                                            {...props}
+                                        />
+                                    ),
+                                    li: (props) => (
+                                        <li className="mb-1" {...props} />
+                                    ),
+                                    a: (props) => (
+                                        <a
+                                            className="underline hover:text-gray-200"
+                                            {...props}
+                                        />
+                                    ),
+                                    code: (props) => (
+                                        <code
+                                            className="bg-gray-700 px-1 rounded"
+                                            {...props}
+                                        />
+                                    ),
+                                    h1: (props) => (
+                                        <h1
+                                            className="text-xl font-bold mb-2"
+                                            {...props}
+                                        />
+                                    ),
+                                    h2: (props) => (
+                                        <h2
+                                            className="text-lg font-bold mb-2"
+                                            {...props}
+                                        />
+                                    ),
+                                    h3: (props) => (
+                                        <h3
+                                            className="text-base font-bold mb-2"
+                                            {...props}
+                                        />
+                                    ),
                                 }}
                             >
-                                {messageContent.replace(/\\n/g, '\n')}
+                                {messageContent.replace(/\\n/g, "\n")}
                             </ReactMarkdown>
+                            {isFinished && loginUrl && (
+                                <div
+                                    className="mt-4 text-sm p-2 border-2 rounded-full border-white text-white cursor-pointer text-center hover:bg-white hover:text-gray-800"
+                                    onClick={handleLoginClick}
+                                >
+                                    Iniciar sesión y continuar
+                                </div>
+                            )}
                         </div>
                     </article>
 
@@ -113,7 +176,7 @@ const Message = ({
                         >
                             {`${isUserMessage ? "Enviado" : "Recibido"}: ${formattedTime} h.`}
                         </time>
-                        
+
                         {/* Tooltip de reenvío para mensajes de usuario con error */}
                         {showResendTooltip && isUserMessage && onResend && (
                             <div className="relative inline-block ml-2">
@@ -123,15 +186,15 @@ const Message = ({
                                     aria-label="Reenviar mensaje"
                                     title="Reenviar mensaje"
                                 >
-                                    <svg 
-                                        width="12" 
-                                        height="12" 
-                                        viewBox="0 0 24 24" 
-                                        fill="none" 
+                                    <svg
+                                        width="12"
+                                        height="12"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
-                                        <path 
-                                            d="M4 12a8 8 0 0 1 8-8V2.5L16 6l-4 3.5V8a6 6 0 1 0 6 6h1.5a7.5 7.5 0 1 1-7.5-7.5z" 
+                                        <path
+                                            d="M4 12a8 8 0 0 1 8-8V2.5L16 6l-4 3.5V8a6 6 0 1 0 6 6h1.5a7.5 7.5 0 1 1-7.5-7.5z"
                                             fill="currentColor"
                                         />
                                     </svg>

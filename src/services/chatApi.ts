@@ -131,13 +131,15 @@ export const chatApiService = {
         content: string,
         timestamp?: string | Date,
         img?: string | null,
-        role: Author = Author.ELE
+        role: Author = Author.ELE,
+        isFinished?: boolean
     ): MessageType {
         return {
             content,
             timestamp: timestamp ? new Date(timestamp) : new Date(),
             img: img || null,
             role,
+            isFinished: isFinished || false,
         };
     },
 
