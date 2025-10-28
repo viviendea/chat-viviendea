@@ -23,7 +23,11 @@ const Message = ({
 
     const handleLoginClick = () => {
         if (loginUrl) {
-            window.location.href = loginUrl;
+            if (window.top) {
+                window.top.location.href = loginUrl;
+            } else {
+                window.location.href = loginUrl;
+            }
         }
     };
 
