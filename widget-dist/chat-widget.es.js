@@ -19018,7 +19018,7 @@ const HC = ({
   isFinished: A = !1
 }) => {
   const p = i === il.USER, d = n === "Escribiendo...", m = () => {
-    c && (window.location.href = c);
+    c && (window.top ? window.top.location.href = c : window.location.href = c);
   }, { displayText: g } = HC({
     enabled: d && !p,
     text: n
@@ -19137,7 +19137,7 @@ const HC = ({
 `)
                 }
               ),
-              A && c && /* @__PURE__ */ ge.jsx(
+              A && /* @__PURE__ */ ge.jsx(
                 "div",
                 {
                   className: "mt-4 text-sm p-2 border-2 rounded-full border-white text-white cursor-pointer text-center hover:bg-white hover:text-gray-800",
