@@ -23,11 +23,7 @@ const Message = ({
 
     const handleLoginClick = () => {
         if (loginUrl) {
-            if (window.top) {
-                window.top.location.href = loginUrl;
-            } else {
-                window.location.href = loginUrl;
-            }
+            window.open(loginUrl, '_blank', 'noopener,noreferrer');
         }
     };
 
