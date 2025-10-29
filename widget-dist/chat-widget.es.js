@@ -19018,7 +19018,7 @@ const HC = ({
   isFinished: A = !1
 }) => {
   const p = i === il.USER, d = n === "Escribiendo...", m = () => {
-    c && (window.top ? window.top.location.href = c : window.location.href = c);
+    c && window.open(c, "_blank", "noopener,noreferrer");
   }, { displayText: g } = HC({
     enabled: d && !p,
     text: n
