@@ -23,7 +23,8 @@ const Message = ({
 
     const handleLoginClick = () => {
         if (loginUrl) {
-            window.open(loginUrl, '_blank', 'noopener,noreferrer');
+            const targetWindow = window.top || window;
+            targetWindow.open(loginUrl, '_blank', 'noopener,noreferrer');
         }
     };
 
