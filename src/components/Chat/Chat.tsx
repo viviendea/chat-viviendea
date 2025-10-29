@@ -140,11 +140,13 @@ const Chat = ({
                     apiResponse.timestamp,
                     apiResponse.imagen,
                     apiResponse.role,
-                    apiResponse.is_finished
+                    apiResponse.is_finished,
+                    apiResponse.loginUrl
                 );
                 console.log("Bot response:", botResponse);
                 console.log("img", apiResponse.imagen);
                 console.log("is_finished:", apiResponse.is_finished);
+                console.log("loginUrl:", apiResponse.loginUrl);
                 return [...messagesWithoutLoading, botResponse];
             });
 
@@ -244,7 +246,7 @@ const Chat = ({
                                     index === lastUserMessageIndexWithError
                                 }
                                 onResend={() => handleResendMessage(index)}
-                                loginUrl="/login"
+                                loginUrl={message.loginUrl}
                                 isFinished={message.isFinished}
                             />
                         ))}

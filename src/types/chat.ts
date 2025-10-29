@@ -14,8 +14,8 @@ export interface MessageType {
     isLastMessage?: boolean;
     showResendTooltip?: boolean;
     onResend?: () => void;
-    loginUrl?: string;
     isFinished?: boolean;
+    loginUrl?: string;
 }
 
 export interface ChatState {

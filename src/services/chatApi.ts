@@ -132,7 +132,8 @@ export const chatApiService = {
         timestamp?: string | Date,
         img?: string | null,
         role: Author = Author.ELE,
-        isFinished?: boolean
+        isFinished?: boolean,
+        loginUrl?: string
     ): MessageType {
         return {
             content,
@@ -140,6 +141,7 @@ export const chatApiService = {
             img: img || null,
             role,
             isFinished: isFinished || false,
+            loginUrl
         };
     },
 
