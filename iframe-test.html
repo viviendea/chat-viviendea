@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Chat Viviendea - Iframe Implementation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #mi-chat-widget {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            z-index: 9999;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #chat-iframe {
+            border: none;
+            display: block;
+            background: transparent;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        /* Responsive styles */
+        @media (min-width: 768px) {
+            #chat-iframe {
+                width: 60vw;
+                max-width: 60vw;
+                height: 90vh;
+                max-height: 90vh;
+            }
+        }
+
+        @media (max-width: 767px) {
+            #chat-iframe {
+                width: 100vw;
+                max-width: 100vw;
+                height: 100vh;
+                max-height: 100vh;
+            }
+        }
+
+        .loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="mi-chat-widget">
+        <div class="loading-message">
+            <div class="loading-spinner"></div>
+            <p>Cargando chat...</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuración del widget - Usando archivos locales
+        const WIDGET_CSS_URL = "./widget-dist/chat-viviendea.css";
+        const WIDGET_JS_URL = "./widget-dist/chat-widget.umd.js";
+
+        let resizeHandler;
+        let focusRestorerCleanup;
+
+        function initChatWidget() {
+            console.log("🚀 Iniciando widget...");
+            const hostContainer = document.getElementById("mi-chat-widget");
+
+            if (!hostContainer) {
+                console.error("❌ No se encontró el contenedor del widget");
+                return;
+            }
+            console.log("✅ Contenedor encontrado");
+
+            // Crear el iframe
+            const iframe = document.createElement("iframe");
+            iframe.id = "chat-iframe";
+            iframe.setAttribute("title", "Chat Viviendea");
+            iframe.setAttribute("aria-label", "Chat Viviendea");
+
+            const widgetConfig = {
+                containerId: "chat-viviendea-widget",
+                position: "custom",
+                width: "100%",
+                height: "100%",
+                theme: "light",
+            };
+
+            // Función para actualizar el tamaño del iframe
+            const updateIframeSize = () => {
+                const isTabletUp = window.matchMedia("(min-width: 768px)").matches;
+
+                if (isTabletUp) {
+                    Object.assign(iframe.style, {
+                        width: "60vw",
+                        maxWidth: "60vw",
+                        height: "90vh",
+                        maxHeight: "90vh",
+                    });
+                } else {
+                    Object.assign(iframe.style, {
+                        width: "100vw",
+                        maxWidth: "100vw",
+                        height: "100vh",
+                        maxHeight: "100vh",
+                    });
+                }
+            };
+
+            updateIframeSize();
+
+            // Event listener para resize
+            resizeHandler = () => updateIframeSize();
+            window.addEventListener("resize", resizeHandler);
+
+            // Remover mensaje de carga
+            const loadingMessage = hostContainer.querySelector(".loading-message");
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+
+            hostContainer.appendChild(iframe);
+
+            // Documento base del iframe
+            const baseDocument = `<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                background: transparent;
+            }
+
+            #chat-viviendea-widget,
+            .chat-viviendea-container,
+            .chat-widget-floating {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                max-height: none !important;
+                border-radius: 14px !important;
+                overflow: hidden !important;
+                box-shadow: none !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+            }
+
+            .chat-wrapper,
+            .chat-widget-floating {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+
+            .messages-list {
+                flex: 1 1 auto !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+            }
+
+            .chat-toggle-btn {
+                display: none !important;
+            }
+
+            .chat-header button[aria-label="Cerrar chat"] {
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="chat-viviendea-widget"></div>
+    </body>
+</html>`;
+
+            iframe.srcdoc = baseDocument;
+
+            // Handler para cuando el iframe cargue
+            const handleLoad = () => {
+                console.log("📄 Iframe cargado");
+                const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+                const iframeWindow = iframe.contentWindow;
+
+                if (!iframeDocument || !iframeWindow) {
+                    console.error("❌ No se pudo acceder al documento del iframe");
+                    return;
+                }
+                console.log("✅ Acceso al documento del iframe obtenido");
+
+                const head = iframeDocument.head;
+                const linkEl = iframeDocument.createElement("link");
+                linkEl.rel = "stylesheet";
+                linkEl.href = WIDGET_CSS_URL;
+                head.appendChild(linkEl);
+                console.log("💅 CSS cargado:", WIDGET_CSS_URL);
+
+                // Configurar el widget en el iframe
+                iframeWindow.chatViviendaConfig = widgetConfig;
+                console.log("⚙️ Configuración del widget:", widgetConfig);
+
+                // Función para cargar el widget
+                const loadWidget = () => {
+                    console.log("🔍 Buscando initChatWidget...", typeof iframeWindow.initChatWidget);
+                    if (typeof iframeWindow.initChatWidget !== "function") {
+                        iframeWindow.requestAnimationFrame(loadWidget);
+                        return;
+                    }
+                    console.log("✅ initChatWidget encontrado!");
+
+                    const widget = iframeWindow.initChatWidget(iframeWindow.chatViviendaConfig);
+
+                    const container = iframeDocument.getElementById(
+                        iframeWindow.chatViviendaConfig.containerId
+                    );
+
+                    const ensureVisible = () => {
+                        if (widget && widget.container) {
+                            widget.container.style.display = "block";
+                        } else if (container) {
+                            container.style.display = "block";
+                        }
+                    };
+
+                    ensureVisible();
+                    let attempts = 0;
+                    const maxAttempts = 20;
+
+                    // Función para abrir el chat automáticamente
+                    const openChat = () => {
+                        if (!container) {
+                            return;
+                        }
+
+                        ensureVisible();
+
+                        if (container.querySelector('[data-testid="chat-container"]')) {
+                            return;
+                        }
+
+                        const toggleButton = container.querySelector(".chat-toggle-btn");
+
+                        if (toggleButton) {
+                            toggleButton.dispatchEvent(
+                                new iframeWindow.MouseEvent("click", { bubbles: true })
+                            );
+                            iframeWindow.requestAnimationFrame(ensureVisible);
+                            return;
+                        }
+
+                        attempts += 1;
+
+                        if (attempts < maxAttempts) {
+                            iframeWindow.requestAnimationFrame(openChat);
+                        }
+                    };
+
+                    iframeWindow.requestAnimationFrame(openChat);
+
+                    // Configurar el restaurador de foco
+                    const setupFocusRestorer = () => {
+                        if (typeof focusRestorerCleanup === "function") {
+                            focusRestorerCleanup();
+                            focusRestorerCleanup = undefined;
+                        }
+
+                        if (!container) {
+                            return;
+                        }
+
+                        const getTextarea = () =>
+                            container.querySelector('[data-testid="message-textarea"]');
+
+                        const focusTextarea = () => {
+                            const textarea = getTextarea();
+
+                            if (!textarea || textarea.disabled) {
+                                return;
+                            }
+
+                            const end = textarea.value.length;
+
+                            try {
+                                textarea.focus({ preventScroll: false });
+                                textarea.setSelectionRange(end, end);
+                            } catch (error) {
+                                textarea.focus();
+                            }
+                        };
+
+                        const mutationObserver = new iframeWindow.MutationObserver(
+                            (mutations) => {
+                                for (const mutation of mutations) {
+                                    if (
+                                        mutation.type === "attributes" &&
+                                        mutation.attributeName === "disabled"
+                                    ) {
+                                        focusTextarea();
+                                    }
+                                }
+                            }
+                        );
+
+                        const reconnectObserver = () => {
+                            const textarea = getTextarea();
+
+                            if (!textarea) {
+                                return;
+                            }
+
+                            mutationObserver.disconnect();
+                            mutationObserver.observe(textarea, {
+                                attributes: true,
+                                attributeFilter: ["disabled"],
+                            });
+                            focusTextarea();
+                        };
+
+                        const treeObserver = new iframeWindow.MutationObserver(() => {
+                            reconnectObserver();
+                        });
+
+                        treeObserver.observe(container, {
+                            childList: true,
+                            subtree: true,
+                        });
+
+                        const handleSendEvent = () => {
+                            iframeWindow.requestAnimationFrame(() => {
+                                focusTextarea();
+                            });
+                        };
+
+                        const containerClickListener = (event) => {
+                            const target = event.target;
+
+                            if (
+                                target &&
+                                target.getAttribute("data-testid") === "send-button"
+                            ) {
+                                handleSendEvent();
+                            }
+                        };
+
+                        container.addEventListener("click", containerClickListener);
+
+                        const keyListener = (event) => {
+                            const target = event.target;
+
+                            if (
+                                target &&
+                                target.getAttribute &&
+                                target.getAttribute("data-testid") === "message-textarea" &&
+                                event.key === "Enter" &&
+                                !event.shiftKey
+                            ) {
+                                handleSendEvent();
+                            }
+                        };
+
+                        container.addEventListener("keydown", keyListener);
+
+                        reconnectObserver();
+
+                        focusRestorerCleanup = () => {
+                            mutationObserver.disconnect();
+                            treeObserver.disconnect();
+                            container.removeEventListener("click", containerClickListener);
+                            container.removeEventListener("keydown", keyListener);
+                            focusRestorerCleanup = undefined;
+                        };
+                    };
+
+                    iframeWindow.requestAnimationFrame(() => {
+                        setupFocusRestorer();
+                    });
+
+                    return widget;
+                };
+
+                // Cargar el script del widget
+                const scriptEl = iframeDocument.createElement("script");
+                scriptEl.src = WIDGET_JS_URL;
+                scriptEl.crossOrigin = "anonymous";
+                scriptEl.onload = () => {
+                    console.log("✅ Script del widget cargado:", WIDGET_JS_URL);
+                    loadWidget();
+                };
+                scriptEl.onerror = (error) => {
+                    console.error(
+                        "❌ No se pudo cargar el script del widget desde",
+                        WIDGET_JS_URL,
+                        error
+                    );
+                };
+
+                console.log("📦 Cargando script del widget...");
+                iframeDocument.body.appendChild(scriptEl);
+            };
+
+            iframe.addEventListener("load", handleLoad, { once: true });
+        }
+
+        // Cleanup function para cuando se cierre la página
+        window.addEventListener("beforeunload", () => {
+            if (resizeHandler) {
+                window.removeEventListener("resize", resizeHandler);
+            }
+
+            if (typeof focusRestorerCleanup === "function") {
+                focusRestorerCleanup();
+            }
+        });
+
+        // Inicializar el widget cuando el DOM esté listo
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", initChatWidget);
+        } else {
+            initChatWidget();
+        }
+    </script>
+</body>
+</html>
