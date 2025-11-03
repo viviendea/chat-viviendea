@@ -29,6 +29,7 @@ export interface ApiMessageResponse {
     metadata?: Record<string, unknown>;
     imagen?: string | null;
     role?: Author;
+    loginUrl?: string;
 }
 
 export const chatApiService = {
@@ -141,7 +142,7 @@ export const chatApiService = {
             img: img || null,
             role,
             isFinished: isFinished || false,
-            loginUrl
+            loginUrl,
         };
     },
 
