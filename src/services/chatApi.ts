@@ -118,7 +118,7 @@ export const chatApiService = {
      */
     createLoadingMessage(): MessageType {
         return {
-            content: "Escribiendo...",
+            content: "Pensando...",
             role: Author.ELE,
             timestamp: new Date(),
             img: null,

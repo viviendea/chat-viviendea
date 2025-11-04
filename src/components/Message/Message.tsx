@@ -19,7 +19,7 @@ const Message = ({
     isFinished = false,
 }: MessageType) => {
     const isUserMessage = role === Author.USER;
-    const isTypingMessage = content === "Escribiendo...";
+    const isTypingMessage = content === "Pensando...";
 
     const handleLoginClick = () => {
         if (loginUrl) {

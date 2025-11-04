@@ -18,7 +18,7 @@ vi.mock("../../services/chatApi", () => ({
         sendMessage: vi.fn(),
         initializeSession: vi.fn(() => Promise.resolve(null)),
         createLoadingMessage: vi.fn(() => ({
-            content: "Escribiendo...",
+            content: "Pensando...",
             role: Author.ELE,
             timestamp: new Date(),
             img: null,
@@ -149,7 +149,7 @@ describe("Chat Component", () => {
         expect(textarea).toBeDisabled(); // Se deshabilita
         expect(sendButton).toBeDisabled();
         expect(screen.getByText("Test message")).toBeInTheDocument(); // Mensaje usuario
-        expect(screen.getByText("Escribiendo...")).toBeInTheDocument(); // Loading
+        expect(screen.getByText("Pensando...")).toBeInTheDocument(); // Loading
 
         // Verificar llamada a API
         expect(mockSendMessage).toHaveBeenCalledWith({
@@ -164,7 +164,7 @@ describe("Chat Component", () => {
         // Verificar resultado final
         await waitFor(() => {
             expect(screen.getByText("Bot response")).toBeInTheDocument();
-            expect(screen.queryByText("Escribiendo...")).not.toBeInTheDocument();
+            expect(screen.queryByText("Pensando...")).not.toBeInTheDocument();
             expect(textarea).not.toBeDisabled();
         });
     });
@@ -190,7 +190,7 @@ describe("Chat Component", () => {
         // Verificar manejo de error
         await waitFor(() => {
             expect(screen.getByText("Lo siento, ocurrió un error: Network error")).toBeInTheDocument();
-            expect(screen.queryByText("Escribiendo...")).not.toBeInTheDocument();
+            expect(screen.queryByText("Pensando...")).not.toBeInTheDocument();
             expect(textarea).not.toBeDisabled();
         });
     });
@@ -216,7 +216,7 @@ describe("Chat Component", () => {
         await user.click(sendButton);
 
         // Verificar que está en loading
-        expect(screen.getByText("Escribiendo...")).toBeInTheDocument();
+        expect(screen.getByText("Pensando...")).toBeInTheDocument();
         expect(textarea).toBeDisabled();
         expect(sendButton).toBeDisabled();
 

@@ -1,255 +1,320 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Viviendea Widget - jsDelivr CDN</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 5px;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-        .button:hover {
-            background: #5a6fd8;
-        }
-        .status {
-            padding: 10px;
-            border-radius: 6px;
-            margin: 15px 0;
-            font-weight: 500;
-        }
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .status.info {
-            background: #cce7ff;
-            color: #004085;
-            border: 1px solid #b3d7ff;
-        }
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .code {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 14px;
-            overflow-x: auto;
-            margin: 15px 0;
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-viviendea.css">
-</head>
-<body>
-    <div class="container">
-        <h1>🚀 Chat Viviendea Widget - jsDelivr CDN</h1>
-        
-        <div class="status info" id="status">
-            🔄 Inicializando widget desde jsDelivr...
-        </div>
-        
-        <div style="margin: 20px 0;">
-            <h3>🎮 Controles de prueba:</h3>
-            <button class="button" onclick="testWidget()">🧪 Probar Widget</button>
-            <button class="button" onclick="checkWidget()">🔍 Verificar Estado</button>
-            <button class="button" onclick="reinitWidget()">🔄 Reinicializar</button>
-            <button class="button" onclick="renderWidget()">🎨 Renderizar Widget</button>
-        </div>
-        
-        <!-- Contenedor específico para el widget -->
-        <div id="chat-widget-container" style="margin: 20px 0; min-height: 100px; border: 2px dashed #ccc; padding: 20px; text-align: center; color: #666;">
-            <p>🤖 El widget de chat aparecerá aquí</p>
-        </div>
-        
-        <div style="margin: 20px 0;">
-            <h3>💻 Código de integración jsDelivr CDN:</h3>
-            <div class="code">
-&lt;-rm rf CSS del Widget --&gt;
-&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-viviendea.css"&gt;
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Chat Viviendea Widget - jsDelivr CDN</title>
+        <style>
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+                    sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+            }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .button {
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                margin: 5px;
+                font-size: 14px;
+                transition: background 0.3s;
+            }
+            .button:hover {
+                background: #5a6fd8;
+            }
+            .status {
+                padding: 10px;
+                border-radius: 6px;
+                margin: 15px 0;
+                font-weight: 500;
+            }
+            .status.success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+            .status.info {
+                background: #cce7ff;
+                color: #004085;
+                border: 1px solid #b3d7ff;
+            }
+            .status.error {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+            .code {
+                background: #2d3748;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 6px;
+                font-family: "Monaco", "Menlo", monospace;
+                font-size: 14px;
+                overflow-x: auto;
+                margin: 15px 0;
+            }
+        </style>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-viviendea.css"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 Chat Viviendea Widget - jsDelivr CDN</h1>
 
-&lt;-rm rf JavaScript del Widget --&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-widget.umd.js"&gt;&lt;/script&gt;
+            <div class="status info" id="status">
+                🔄 Inicializando widget desde jsDelivr...
+            </div>
 
-&lt;-rm rf Inicialización --&gt;
-&lt;script&gt;
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      if (window.ChatViviendea) {
-        const widget = new ChatViviendea({
-          theme: 'light',
-          position: 'bottom-right'
-        });
-        widget.init(); // ¡Importante llamar init()!
-      }
-    }, 1000);
-  });
-&lt;/script&gt;
+            <div style="margin: 20px 0">
+                <h3>🎮 Controles de prueba:</h3>
+                <button class="button" onclick="testWidget()">
+                    🧪 Probar Widget
+                </button>
+                <button class="button" onclick="checkWidget()">
+                    🔍 Verificar Estado
+                </button>
+                <button class="button" onclick="reinitWidget()">
+                    🔄 Reinicializar
+                </button>
+                <button class="button" onclick="renderWidget()">
+                    🎨 Renderizar Widget
+                </button>
+            </div>
+
+            <!-- Contenedor específico para el widget -->
+            <div
+                id="chat-widget-container"
+                style="
+                    margin: 20px 0;
+                    min-height: 100px;
+                    border: 2px dashed #ccc;
+                    padding: 20px;
+                    text-align: center;
+                    color: #666;
+                "
+            >
+                <p>🤖 El widget de chat aparecerá aquí</p>
+            </div>
+
+            <div style="margin: 20px 0">
+                <h3>💻 Código de integración jsDelivr CDN:</h3>
+                <div class="code">
+                    &lt;-rm rf CSS del Widget --&gt; &lt;link rel="stylesheet"
+                    href="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-viviendea.css"&gt;
+                    &lt;-rm rf JavaScript del Widget --&gt; &lt;script
+                    src="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-widget.umd.js"&gt;&lt;/script&gt;
+                    &lt;-rm rf Inicialización --&gt; &lt;script&gt;
+                    window.addEventListener('load', function() {
+                    setTimeout(function() { if (window.ChatViviendea) { const
+                    widget = new ChatViviendea({ theme: 'light', position:
+                    'bottom-right' }); widget.init(); // ¡Importante llamar
+                    init()! } }, 1000); }); &lt;/script&gt;
+                </div>
             </div>
         </div>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-widget.umd.js"></script>
-    
-    <script>
-        let chatWidget = null;
-        
-        function updateStatus(message, type = 'info') {
-            const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = `status ${type}`;
-        }
-        
-        // Función mejorada para inicializar el widget
-        function initializeWidget() {
-            try {
-                console.log('🔍 Verificando ChatViviendea desde jsDelivr...');
-                console.log('Tipo:', typeof window.ChatViviendea);
-                
-                if (typeof window.ChatViviendea !== 'function') {
-                    updateStatus('❌ ChatViviendea no disponible', 'error');
+
+        <script src="https://cdn.jsdelivr.net/gh/viviendea/chat-viviendea@latest/widget-dist/chat-widget.umd.js"></script>
+
+        <script>
+            let chatWidget = null;
+
+            function updateStatus(message, type = "info") {
+                const status = document.getElementById("status");
+                status.textContent = message;
+                status.className = `status ${type}`;
+            }
+
+            // Función mejorada para inicializar el widget
+            function initializeWidget() {
+                try {
+                    console.log(
+                        "🔍 Verificando ChatViviendea desde jsDelivr..."
+                    );
+                    console.log("Tipo:", typeof window.ChatViviendea);
+
+                    if (typeof window.ChatViviendea !== "function") {
+                        updateStatus("❌ ChatViviendea no disponible", "error");
+                        return false;
+                    }
+
+                    // Crear nueva instancia del widget y llamar init()
+                    chatWidget = new window.ChatViviendea({
+                        theme: "light",
+                        position: "bottom-right",
+                        width: "400px",
+                        height: "600px",
+                    });
+
+                    // Llamar init() para renderizar el widget
+                    chatWidget.init();
+                    console.log(
+                        "✅ Widget creado e inicializado desde jsDelivr:",
+                        chatWidget
+                    );
+
+                    // Verificar si el widget se renderizó en el DOM
+                    setTimeout(() => {
+                        const widgetInDOM =
+                            document.querySelector('[id*="chat-viviendea"]') ||
+                            document.querySelector(".chat-viviendea-container");
+                        if (widgetInDOM) {
+                            updateStatus(
+                                "✅ Widget renderizado correctamente en el DOM",
+                                "success"
+                            );
+                        } else {
+                            updateStatus(
+                                "⚠️ Widget creado pero no visible en DOM",
+                                "error"
+                            );
+                            console.log(
+                                "DOM body children:",
+                                document.body.children
+                            );
+                        }
+                    }, 1000);
+
+                    updateStatus(
+                        "✅ Widget inicializado desde jsDelivr CDN",
+                        "success"
+                    );
+                    return true;
+                } catch (error) {
+                    console.error("❌ Error:", error);
+                    updateStatus(`❌ Error: ${error.message}`, "error");
                     return false;
                 }
-                
-                // Crear nueva instancia del widget y llamar init()
-                chatWidget = new window.ChatViviendea({
-                    theme: 'light',
-                    position: 'bottom-right',
-                    width: '400px',
-                    height: '600px'
-                });
-                
-                // Llamar init() para renderizar el widget
-                chatWidget.init();
-                console.log('✅ Widget creado e inicializado desde jsDelivr:', chatWidget);
-                
-                // Verificar si el widget se renderizó en el DOM
-                setTimeout(() => {
-                    const widgetInDOM = document.querySelector('[id*="chat-viviendea"]') || 
-                                      document.querySelector('.chat-viviendea-container');
-                    if (widgetInDOM) {
-                        updateStatus('✅ Widget renderizado correctamente en el DOM', 'success');
-                    } else {
-                        updateStatus('⚠️ Widget creado pero no visible en DOM', 'error');
-                        console.log('DOM body children:', document.body.children);
-                    }
-                }, 1000);
-                
-                updateStatus('✅ Widget inicializado desde jsDelivr CDN', 'success');
-                return true;
-                
-            } catch (error) {
-                console.error('❌ Error:', error);
-                updateStatus(`❌ Error: ${error.message}`, 'error');
-                return false;
             }
-        }
-        
-        function testWidget() {
-            if (!chatWidget) {
-                if (!initializeWidget()) return;
-            }
-            console.log('🧪 Testing widget from jsDelivr...');
-            console.log('Widget instance:', chatWidget);
-            updateStatus('🧪 Revisar consola para detalles', 'info');
-        }
-        
-        function checkWidget() {
-            console.log('🔍 Estado del widget (jsDelivr CDN):');
-            console.log('- window.ChatViviendea:', typeof window.ChatViviendea);
-            console.log('- chatWidget:', chatWidget);
-            
-            if (window.ChatViviendea) {
-                updateStatus('✅ ChatViviendea disponible desde jsDelivr', 'success');
-            } else {
-                updateStatus('❌ ChatViviendea no disponible desde jsDelivr', 'error');
-            }
-        }
-        
-        function reinitWidget() {
-            chatWidget = null;
-            updateStatus('🔄 Reinicializando...', 'info');
-            setTimeout(initializeWidget, 500);
-        }
-        
-        function renderWidget() {
-            if (!chatWidget) {
-                updateStatus('⚠️ Widget no inicializado. Inicializando primero...', 'info');
-                if (!initializeWidget()) return;
-            }
-            
-            try {
-                console.log('🎨 Intentando renderizar widget...');
-                console.log('Métodos disponibles:', Object.getOwnPropertyNames(chatWidget));
-                console.log('Prototipo:', Object.getOwnPropertyNames(Object.getPrototypeOf(chatWidget)));
-                
-                // Crear contenedor visual si no existe
-                const container = document.getElementById('chat-widget-container');
-                if (container) {
-                    container.innerHTML = '<div style="padding: 20px; text-align: center; background: #f0f0f0; border-radius: 8px;"><p>🤖 Widget creado correctamente</p><p>El widget debería aparecer en la esquina inferior derecha</p></div>';
+
+            function testWidget() {
+                if (!chatWidget) {
+                    if (!initializeWidget()) return;
                 }
-                
-                // Verificar si ya se renderizó automáticamente
-                const existingWidget = document.querySelector('[id*="chat"]');
-                if (existingWidget) {
-                    updateStatus('✅ Widget ya renderizado automáticamente', 'success');
-                } else {
-                    updateStatus('ℹ️ Widget creado - debería aparecer automáticamente', 'info');
-                }
-                
-            } catch (error) {
-                console.error('❌ Error al renderizar:', error);
-                updateStatus(`❌ Error al renderizar: ${error.message}`, 'error');
+                console.log("🧪 Testing widget from jsDelivr...");
+                console.log("Widget instance:", chatWidget);
+                updateStatus("🧪 Revisar consola para detalles", "info");
             }
-        }
-        
-        window.addEventListener('load', function() {
-            console.log('📄 Página cargada');
-            updateStatus('🔄 Cargando desde jsDelivr CDN...', 'info');
-            
-            setTimeout(function() {
+
+            function checkWidget() {
+                console.log("🔍 Estado del widget (jsDelivr CDN):");
+                console.log(
+                    "- window.ChatViviendea:",
+                    typeof window.ChatViviendea
+                );
+                console.log("- chatWidget:", chatWidget);
+
                 if (window.ChatViviendea) {
-                    console.log('✅ Widget cargado desde jsDelivr');
-                    setTimeout(initializeWidget, 500);
+                    updateStatus(
+                        "✅ ChatViviendea disponible desde jsDelivr",
+                        "success"
+                    );
                 } else {
-                    console.error('❌ Widget no cargado desde jsDelivr');
-                    updateStatus('❌ Error: No se pudo cargar desde jsDelivr', 'error');
+                    updateStatus(
+                        "❌ ChatViviendea no disponible desde jsDelivr",
+                        "error"
+                    );
                 }
-            }, 1500);
-        });
-    </script>
-</body>
+            }
+
+            function reinitWidget() {
+                chatWidget = null;
+                updateStatus("🔄 Reinicializando...", "info");
+                setTimeout(initializeWidget, 500);
+            }
+
+            function renderWidget() {
+                if (!chatWidget) {
+                    updateStatus(
+                        "⚠️ Widget no inicializado. Inicializando primero...",
+                        "info"
+                    );
+                    if (!initializeWidget()) return;
+                }
+
+                try {
+                    console.log("🎨 Intentando renderizar widget...");
+                    console.log(
+                        "Métodos disponibles:",
+                        Object.getOwnPropertyNames(chatWidget)
+                    );
+                    console.log(
+                        "Prototipo:",
+                        Object.getOwnPropertyNames(
+                            Object.getPrototypeOf(chatWidget)
+                        )
+                    );
+
+                    // Crear contenedor visual si no existe
+                    const container = document.getElementById(
+                        "chat-widget-container"
+                    );
+                    if (container) {
+                        container.innerHTML =
+                            '<div style="padding: 20px; text-align: center; background: #f0f0f0; border-radius: 8px;"><p>🤖 Widget creado correctamente</p><p>El widget debería aparecer en la esquina inferior derecha</p></div>';
+                    }
+
+                    // Verificar si ya se renderizó automáticamente
+                    const existingWidget =
+                        document.querySelector('[id*="chat"]');
+                    if (existingWidget) {
+                        updateStatus(
+                            "✅ Widget ya renderizado automáticamente",
+                            "success"
+                        );
+                    } else {
+                        updateStatus(
+                            "ℹ️ Widget creado - debería aparecer automáticamente",
+                            "info"
+                        );
+                    }
+                } catch (error) {
+                    console.error("❌ Error al renderizar:", error);
+                    updateStatus(
+                        `❌ Error al renderizar: ${error.message}`,
+                        "error"
+                    );
+                }
+            }
+
+            window.addEventListener("load", function () {
+                console.log("📄 Página cargada");
+                updateStatus("🔄 Cargando desde jsDelivr CDN...", "info");
+
+                setTimeout(function () {
+                    if (window.ChatViviendea) {
+                        console.log("✅ Widget cargado desde jsDelivr");
+                        setTimeout(initializeWidget, 500);
+                    } else {
+                        console.error("❌ Widget no cargado desde jsDelivr");
+                        updateStatus(
+                            "❌ Error: No se pudo cargar desde jsDelivr",
+                            "error"
+                        );
+                    }
+                }, 1500);
+            });
+        </script>
+    </body>
 </html>

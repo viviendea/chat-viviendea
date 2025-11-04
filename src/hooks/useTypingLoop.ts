@@ -13,7 +13,7 @@ interface UseTypingLoopReturn {
 
 export const useTypingLoop = ({
     enabled,
-    text = "Escribiendo...",
+    text = "Pensando...",
     speed = 80,
     pauseBetweenLoops = 500,
 }: UseTypingLoopProps): UseTypingLoopReturn => {

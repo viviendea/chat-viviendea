@@ -7,7 +7,7 @@ describe("chatApiService", () => {
         it("debería crear un mensaje de loading correcto", () => {
             const loadingMessage = chatApiService.createLoadingMessage();
 
-            expect(loadingMessage.content).toBe("Escribiendo...");
+            expect(loadingMessage.content).toBe("Pensando...");
             expect(loadingMessage.role).toBe(Author.ELE);
             expect(loadingMessage.img).toBeNull();
             expect(loadingMessage.timestamp).toBeInstanceOf(Date);
