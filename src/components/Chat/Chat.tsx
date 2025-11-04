@@ -185,20 +185,7 @@ const Chat = ({
     };
     return (
         <section className="chat-wrapper w-full h-full">
-            {!isChatOpen ? (
-                // Icono circular flotante
-                <button
-                    onClick={toggleChat}
-                    className="chat-toggle-btn absolute bottom-6 right-6 w-16 h-16 bg-white hover:scale-110 rounded-full border border-gray-300 flex items-center justify-center transition-all duration-300 z-50 cursor-pointer"
-                    aria-label="Abrir chat de Viviendea"
-                >
-                    <img
-                        className="w-8 h-8"
-                        src={getChatIconPath()}
-                        alt="Chat de Viviendea"
-                    />
-                </button>
-            ) : (
+            {isChatOpen ? (
                 // Chat completo
                 <section
                     className="chat-widget-floating w-full h-full bg-white border border-gray-300 rounded-lg shadow-lg flex flex-col"
@@ -260,6 +247,19 @@ const Chat = ({
                         disabled={isLoading}
                     />
                 </section>
+            ) : (
+                // Icono circular flotante
+                <button
+                    onClick={toggleChat}
+                    className="chat-toggle-btn absolute bottom-6 right-6 w-16 h-16 bg-white hover:scale-110 rounded-full border border-gray-300 flex items-center justify-center transition-all duration-300 z-50 cursor-pointer"
+                    aria-label="Abrir chat de Viviendea"
+                >
+                    <img
+                        className="w-8 h-8"
+                        src={getChatIconPath()}
+                        alt="Chat de Viviendea"
+                    />
+                </button>
             )}
         </section>
     );
