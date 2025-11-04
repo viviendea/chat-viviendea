@@ -21230,7 +21230,7 @@ class Qg {
       width: "400px",
       height: "600px",
       theme: "light",
-      open: !1,
+      open: !0,
       ...i
     };
   }
