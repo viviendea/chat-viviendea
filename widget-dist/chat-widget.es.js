@@ -21039,7 +21039,7 @@ const {
   }
 }, pw = ({
   initialMessages: n = [],
-  defaultOpen: i = !1
+  defaultOpen: i = !0
 }) => {
   const [r, u] = Pe.useState(n), [s, f] = Pe.useState(!1), [c, A] = Pe.useState(i), [p, d] = Pe.useState(null), m = Pe.useRef(!1), g = Pe.useRef(null), x = Pe.useRef(null), v = () => {
     setTimeout(() => {
