@@ -7,7 +7,7 @@ import { getChatIconPath } from "../../utils/assets";
 
 const Chat = ({
     initialMessages = [],
-    defaultOpen = false,
+    defaultOpen = true,
 }: {
     initialMessages?: MessageType[];
     defaultOpen?: boolean;
