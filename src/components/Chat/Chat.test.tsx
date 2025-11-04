@@ -55,6 +55,7 @@ describe("Chat Component", () => {
                         img: null,
                     },
                 ]}
+                defaultOpen={false}
             />
         );
 
@@ -62,6 +63,28 @@ describe("Chat Component", () => {
         expect(screen.getByRole("button", { name: "Abrir chat de Viviendea" })).toBeInTheDocument();
         expect(screen.queryByTestId("chat-container")).not.toBeInTheDocument();
         expect(screen.queryByText("Chat de Viviendea")).not.toBeInTheDocument();
+    });
+
+    it("renders chat open when defaultOpen is true", () => {
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Mensaje inicial",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+                defaultOpen={true}
+            />
+        );
+
+        // El chat debe estar abierto inicialmente
+        expect(screen.getByTestId("chat-container")).toBeInTheDocument();
+        expect(screen.getByText("Chat de Viviendea")).toBeInTheDocument();
+        expect(screen.getByText("Mensaje inicial")).toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: "Abrir chat de Viviendea" })).not.toBeInTheDocument();
     });
 
     it("opens chat when toggle button is clicked", async () => {
@@ -76,6 +99,7 @@ describe("Chat Component", () => {
                         img: null,
                     },
                 ]}
+                defaultOpen={false}
             />
         );
 
@@ -101,6 +125,7 @@ describe("Chat Component", () => {
                         img: null,
                     },
                 ]}
+                defaultOpen={false}
             />
         );
 
@@ -131,11 +156,9 @@ describe("Chat Component", () => {
         });
         mockSendMessage.mockReturnValue(promise);
 
-        render(<Chat initialMessages={[]} />);
+        render(<Chat initialMessages={[]} defaultOpen={true} />);
 
-        // Abrir el chat primero
-        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
-        await user.click(toggleButton);
+        // El chat ya está abierto, no necesitamos hacer click
 
         const textarea = screen.getByTestId("message-textarea");
         const sendButton = screen.getByTestId("send-button");
@@ -175,11 +198,9 @@ describe("Chat Component", () => {
         
         mockSendMessage.mockRejectedValue(new Error("Network error"));
 
-        render(<Chat initialMessages={[]} />);
+        render(<Chat initialMessages={[]} defaultOpen={true} />);
 
-        // Abrir el chat primero
-        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
-        await user.click(toggleButton);
+        // El chat ya está abierto, no necesitamos hacer click
 
         const textarea = screen.getByTestId("message-textarea");
         const sendButton = screen.getByTestId("send-button");
@@ -202,11 +223,9 @@ describe("Chat Component", () => {
         // Mock que nunca se resuelve para simular loading prolongado
         mockSendMessage.mockReturnValue(new Promise(() => {}));
 
-        render(<Chat initialMessages={[]} />);
+        render(<Chat initialMessages={[]} defaultOpen={true} />);
 
-        // Abrir el chat primero
-        const toggleButton = screen.getByRole("button", { name: "Abrir chat de Viviendea" });
-        await user.click(toggleButton);
+        // El chat ya está abierto, no necesitamos hacer click
 
         const textarea = screen.getByTestId("message-textarea");
         const sendButton = screen.getByTestId("send-button");
