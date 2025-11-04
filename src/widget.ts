@@ -14,6 +14,7 @@ export interface ChatWidgetConfig {
   position?: 'bottom-right' | 'bottom-left' | 'custom';
   width?: string;
   height?: string;
+  open?: boolean;
 }
 
 // Clase principal del widget
@@ -29,6 +30,7 @@ export class ChatViviendea {
       width: '400px',
       height: '600px',
       theme: 'light',
+      open: false,
       ...config
     };
   }
@@ -94,7 +96,8 @@ export class ChatViviendea {
     this.root = createRoot(this.container);
     this.root.render(
       React.createElement(Chat, {
-        initialMessages: this.config.initialMessages
+        initialMessages: this.config.initialMessages,
+        defaultOpen: this.config.open
       })
     );
   }

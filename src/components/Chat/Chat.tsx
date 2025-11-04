@@ -7,12 +7,14 @@ import { getChatIconPath } from "../../utils/assets";
 
 const Chat = ({
     initialMessages = [],
+    defaultOpen = false,
 }: {
     initialMessages?: MessageType[];
+    defaultOpen?: boolean;
 }) => {
     const [messages, setMessages] = useState<MessageType[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
-    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(defaultOpen);
     const [lastUserMessageIndexWithError, setLastUserMessageIndexWithError] =
         useState<number | null>(null);
     const isSessionInitialized = useRef(false);
