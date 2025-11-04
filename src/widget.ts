@@ -30,7 +30,7 @@ export class ChatViviendea {
       width: '400px',
       height: '600px',
       theme: 'light',
-      open: false,
+      open: true,
       ...config
     };
   }
