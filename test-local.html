@@ -27,23 +27,34 @@
     <div class="container">
         <h1>🧪 Test Local - Chat Toggle</h1>
         <p>Este test usa los archivos locales del widget para verificar que el toggle funcione correctamente.</p>
-        <p><strong>Esperado:</strong> Debería aparecer solo un botón flotante circular inicialmente.</p>
+        <p><strong>Esperado:</strong> El chat debería aparecer ABIERTO por defecto. Solo mostrará el botón si configuras open: false.</p>
+        <p><em>Última recarga: <span id="reload-time"></span></em></p>
     </div>
 
-    <!-- Usar archivo local -->
-    <script src="./widget-dist/chat-widget.umd.js"></script>
+    <!-- Cargar widget con cache-busting -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Mostrar hora de recarga
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('reload-time').textContent = new Date().toLocaleTimeString();
+        });
+        
+        // Cargar y inicializar widget
+        const timestamp = new Date().getTime();
+        const script = document.createElement('script');
+        script.src = `./widget-dist/chat-widget.umd.js?v=${timestamp}`;
+        script.onload = function() {
             console.log('🧪 Testing widget locally...');
             
             if (typeof window.ChatViviendea !== 'undefined') {
                 console.log('✅ ChatViviendea disponible localmente');
                 
-                // Inicializar widget
+                // Inicializar widget - por defecto open: true (chat abierto)
                 const chatWidget = new window.ChatViviendea({
                     position: 'bottom-right',
                     width: '400px',
                     height: '600px'
+                    // open: true es el valor por defecto, no hace falta especificarlo
+                    // Si quieres solo el botón, usa: open: false
                 });
                 
                 chatWidget.init();
@@ -51,7 +62,11 @@
             } else {
                 console.error('❌ ChatViviendea no disponible localmente');
             }
-        });
+        };
+        script.onerror = function() {
+            console.error('❌ Error cargando el widget');
+        };
+        document.head.appendChild(script);
     </script>
 </body>
 </html>
