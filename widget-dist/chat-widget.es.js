@@ -21193,7 +21193,7 @@ const {
             s0,
             {
               onSendMessage: z,
-              disabled: s
+              disabled: s || r.length === 0
             }
           )
         ]

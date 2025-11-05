@@ -156,7 +156,19 @@ describe("Chat Component", () => {
         });
         mockSendMessage.mockReturnValue(promise);
 
-        render(<Chat initialMessages={[]} defaultOpen={true} />);
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Hola, ¿en qué puedo ayudarte?",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+                defaultOpen={true}
+            />
+        );
 
         // El chat ya está abierto, no necesitamos hacer click
 
@@ -198,7 +210,19 @@ describe("Chat Component", () => {
         
         mockSendMessage.mockRejectedValue(new Error("Network error"));
 
-        render(<Chat initialMessages={[]} defaultOpen={true} />);
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Hola, ¿en qué puedo ayudarte?",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+                defaultOpen={true}
+            />
+        );
 
         // El chat ya está abierto, no necesitamos hacer click
 
@@ -223,7 +247,19 @@ describe("Chat Component", () => {
         // Mock que nunca se resuelve para simular loading prolongado
         mockSendMessage.mockReturnValue(new Promise(() => {}));
 
-        render(<Chat initialMessages={[]} defaultOpen={true} />);
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Hola, ¿en qué puedo ayudarte?",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+                defaultOpen={true}
+            />
+        );
 
         // El chat ya está abierto, no necesitamos hacer click
 

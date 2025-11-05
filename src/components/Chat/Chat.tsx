@@ -244,7 +244,7 @@ const Chat = ({
 
                     <InputArea
                         onSendMessage={handleMessage}
-                        disabled={isLoading}
+                        disabled={isLoading || messages.length === 0}
                     />
                 </section>
             ) : (

@@ -7,6 +7,12 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+## [1.0.28] - 2025-11-05
+
+### Corregido
+- Prevenir envío de mensajes antes de inicialización del chat
+- Actualizar tests para reflejar el nuevo comportamiento de validación
+
 ## [1.0.4] - 2025-09-24
 
 ### Cambiado
