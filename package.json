@@ -1,7 +1,7 @@
 {
   "name": "chat-viviendea",
   "private": false,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "description": "Widget de chat interactivo para sitios web de Viviendea",
   "main": "widget-dist/chat-widget.umd.js",
