@@ -9,12 +9,17 @@ const Chat = ({
     initialMessages = [],
     defaultOpen = true,
     targetAgent = null,
+    initialMessage = null,
 }: {
     initialMessages?: MessageType[];
     defaultOpen?: boolean;
     targetAgent?: string | null;
+    initialMessage?: string | null;
 }) => {
     const [messages, setMessages] = useState<MessageType[]>(initialMessages);
+    const [isInitialLoading, setIsInitialLoading] = useState(
+        initialMessages.length === 0
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(defaultOpen);
     const [lastUserMessageIndexWithError, setLastUserMessageIndexWithError] =
@@ -53,7 +58,8 @@ const Chat = ({
             isSessionInitialized.current = true;
 
             const initResponse = await chatApiService.initializeSession(
-                targetAgent
+                targetAgent,
+                initialMessage
             );
 
             if (initResponse && initResponse.message) {
@@ -73,10 +79,18 @@ const Chat = ({
                     scrollToBottom();
                 }, 300);
             }
+
+            setIsInitialLoading(false);
         };
 
         initializeChat();
-    }, [targetAgent]); // Se ejecuta al montar (o si cambia targetAgent)
+    }, [targetAgent, initialMessage]); // Se ejecuta al montar (o si cambia targetAgent)
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            setIsInitialLoading(false);
+        }
+    }, [messages.length]);
 
     const toggleChat = () => {
         setIsChatOpen(!isChatOpen);
@@ -228,6 +242,11 @@ const Chat = ({
                             flexShrink: 1,
                         }}
                     >
+                        {isInitialLoading && messages.length === 0 && (
+                            <div className="text-center text-gray-500" aria-busy="true">
+                                Cargando conversación...
+                            </div>
+                        )}
                         {messages.map((message, index) => (
                             <Message
                                 key={`${message.role}-${index}`}
@@ -248,7 +267,9 @@ const Chat = ({
 
                     <InputArea
                         onSendMessage={handleMessage}
-                        disabled={isLoading || messages.length === 0}
+                        disabled={
+                            isLoading || isInitialLoading || messages.length === 0
+                        }
                     />
                 </section>
             ) : (

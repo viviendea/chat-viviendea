@@ -41,11 +41,12 @@ export const chatApiService = {
      * Inicializa la sesión del chat enviando un mensaje de inicio
      */
     async initializeSession(
-        targetAgent: string | null = null
+        targetAgent: string | null = null,
+        initialMessage: string | null = null
     ): Promise<ApiMessageResponse | null> {
         try {
             const initRequest = {
-                message: "hol",
+                message: initialMessage ?? "hol",
                 userId: "user-123",
                 conversationId: "conversation-123",
                 targetAgent: targetAgent ?? null,

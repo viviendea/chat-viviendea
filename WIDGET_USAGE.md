@@ -91,6 +91,8 @@ Para mayor estabilidad, especifica una versión particular:
 | `height` | string | `'600px'` | Alto del widget |
 | `theme` | string | `'light'` | Tema del widget (`'light'`, `'dark'`) |
 | `initialMessages` | array | `[]` | Mensajes iniciales del chat |
+| `targetAgent` | string \| null | `null` | Identificador del agente objetivo para personalizar la sesión |
+| `initialMessage` | string \| null | `null` | Mensaje inicial que se envía al crear la sesión (usa el mensaje por defecto si es `null`) |
 
 ## 🎨 Personalización CSS
 

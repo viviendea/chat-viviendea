@@ -16,8 +16,9 @@ vi.mock("../../hooks/useTypingLoop", () => ({
 vi.mock("../../services/chatApi", () => ({
     chatApiService: {
         sendMessage: vi.fn(),
-        initializeSession: vi.fn((_targetAgent?: string | null) =>
-            Promise.resolve(null)
+        initializeSession: vi.fn(
+            (_targetAgent?: string | null, _initialMessage?: string | null) =>
+                Promise.resolve(null)
         ),
         createLoadingMessage: vi.fn(() => ({
             content: "Pensando...",
@@ -134,7 +135,30 @@ describe("Chat Component", () => {
         );
 
         await waitFor(() => {
-            expect(mockInitializeSession).toHaveBeenCalledWith("financial");
+            expect(mockInitializeSession).toHaveBeenCalledWith("financial", null);
+        });
+    });
+
+    it("passes initialMessage to initializeSession", async () => {
+        const mockInitializeSession = vi.mocked(chatApiService.initializeSession);
+
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Hola, ¿en qué puedo ayudarte?",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+                defaultOpen={true}
+                initialMessage="Hola inicial"
+            />
+        );
+
+        await waitFor(() => {
+            expect(mockInitializeSession).toHaveBeenCalledWith(null, "Hola inicial");
         });
     });
 
