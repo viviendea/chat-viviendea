@@ -7,6 +7,12 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+## [1.0.30] - 2026-01-12
+
+### Cambiado
+- Corregir lint en build y tests
+
+
 ## [1.0.29] - 2026-01-12
 
 ### Cambiado

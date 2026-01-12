@@ -17,8 +17,11 @@ vi.mock("../../services/chatApi", () => ({
     chatApiService: {
         sendMessage: vi.fn(),
         initializeSession: vi.fn(
-            (_targetAgent?: string | null, _initialMessage?: string | null) =>
-                Promise.resolve(null)
+            (_targetAgent?: string | null, _initialMessage?: string | null) => {
+                void _targetAgent;
+                void _initialMessage;
+                return Promise.resolve(null);
+            }
         ),
         createLoadingMessage: vi.fn(() => ({
             content: "Pensando...",
