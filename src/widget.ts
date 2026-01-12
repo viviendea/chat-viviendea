@@ -15,6 +15,7 @@ export interface ChatWidgetConfig {
   width?: string;
   height?: string;
   open?: boolean;
+  targetAgent?: string | null;
 }
 
 // Clase principal del widget
@@ -31,6 +32,7 @@ export class ChatViviendea {
       height: '600px',
       theme: 'light',
       open: true,
+      targetAgent: null,
       ...config
     };
   }
@@ -97,7 +99,8 @@ export class ChatViviendea {
     this.root.render(
       React.createElement(Chat, {
         initialMessages: this.config.initialMessages,
-        defaultOpen: this.config.open
+        defaultOpen: this.config.open,
+        targetAgent: this.config.targetAgent ?? null
       })
     );
   }

@@ -16,7 +16,9 @@ vi.mock("../../hooks/useTypingLoop", () => ({
 vi.mock("../../services/chatApi", () => ({
     chatApiService: {
         sendMessage: vi.fn(),
-        initializeSession: vi.fn(() => Promise.resolve(null)),
+        initializeSession: vi.fn((_targetAgent?: string | null) =>
+            Promise.resolve(null)
+        ),
         createLoadingMessage: vi.fn(() => ({
             content: "Pensando...",
             role: Author.ELE,
@@ -111,6 +113,29 @@ describe("Chat Component", () => {
         expect(screen.getByText("Mensaje inicial")).toBeInTheDocument();
         expect(screen.getByText("Chat de Viviendea")).toBeInTheDocument();
         expect(screen.queryByRole("button", { name: "Abrir chat de Viviendea" })).not.toBeInTheDocument();
+    });
+
+    it("passes targetAgent to initializeSession", async () => {
+        const mockInitializeSession = vi.mocked(chatApiService.initializeSession);
+
+        render(
+            <Chat
+                initialMessages={[
+                    {
+                        content: "Hola, ¿en qué puedo ayudarte?",
+                        role: Author.ELE,
+                        timestamp: new Date(),
+                        img: null,
+                    },
+                ]}
+                defaultOpen={true}
+                targetAgent="financial"
+            />
+        );
+
+        await waitFor(() => {
+            expect(mockInitializeSession).toHaveBeenCalledWith("financial");
+        });
     });
 
     it("closes chat when close button is clicked", async () => {

@@ -8,9 +8,11 @@ import { getChatIconPath } from "../../utils/assets";
 const Chat = ({
     initialMessages = [],
     defaultOpen = true,
+    targetAgent = null,
 }: {
     initialMessages?: MessageType[];
     defaultOpen?: boolean;
+    targetAgent?: string | null;
 }) => {
     const [messages, setMessages] = useState<MessageType[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +52,9 @@ const Chat = ({
 
             isSessionInitialized.current = true;
 
-            const initResponse = await chatApiService.initializeSession();
+            const initResponse = await chatApiService.initializeSession(
+                targetAgent
+            );
 
             if (initResponse && initResponse.message) {
                 // Agregar la respuesta inicial del bot a los mensajes
@@ -72,7 +76,7 @@ const Chat = ({
         };
 
         initializeChat();
-    }, []); // Sin dependencias para que solo se ejecute una vez al montar
+    }, [targetAgent]); // Se ejecuta al montar (o si cambia targetAgent)
 
     const toggleChat = () => {
         setIsChatOpen(!isChatOpen);

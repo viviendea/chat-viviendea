@@ -15,6 +15,7 @@ export interface ApiMessageRequest {
     userId?: string;
     conversationId?: string;
     session_jwt?: string;
+    targetAgent?: string | null;
 }
 
 export interface ApiMessageResponse {
@@ -39,12 +40,15 @@ export const chatApiService = {
     /**
      * Inicializa la sesión del chat enviando un mensaje de inicio
      */
-    async initializeSession(): Promise<ApiMessageResponse | null> {
+    async initializeSession(
+        targetAgent: string | null = null
+    ): Promise<ApiMessageResponse | null> {
         try {
             const initRequest = {
                 message: "hol",
                 userId: "user-123",
                 conversationId: "conversation-123",
+                targetAgent: targetAgent ?? null,
             };
 
             const response = await apiClient.post<ApiMessageResponse>(
