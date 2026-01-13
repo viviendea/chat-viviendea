@@ -16,9 +16,17 @@ const Chat = ({
     targetAgent?: string | null;
     initialMessage?: string | null;
 }) => {
-    const [messages, setMessages] = useState<MessageType[]>(initialMessages);
+    const [messages, setMessages] = useState<MessageType[]>(() => {
+        const baseMessages = [...initialMessages];
+        if (initialMessage) {
+            baseMessages.push(
+                chatApiService.createBotMessage(initialMessage)
+            );
+        }
+        return baseMessages;
+    });
     const [isInitialLoading, setIsInitialLoading] = useState(
-        initialMessages.length === 0
+        initialMessages.length === 0 && !initialMessage
     );
     const [isLoading, setIsLoading] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(defaultOpen);
@@ -52,6 +60,11 @@ const Chat = ({
 
     // Inicializar sesión al montar el componente
     useEffect(() => {
+        if (initialMessage) {
+            setIsInitialLoading(false);
+            return;
+        }
+
         const initializeChat = async () => {
             if (isSessionInitialized.current) return;
 
@@ -138,6 +151,7 @@ const Chat = ({
                 message: message,
                 userId: "user-123", // En producción esto vendría del contexto de usuario
                 conversationId: "conversation-123", // En producción esto se manejaría dinámicamente
+                targetAgent: targetAgent ?? null,
             });
 
             // Calcular tiempo transcurrido y asegurar mínimo 1 segundo de "Escribiendo..."
